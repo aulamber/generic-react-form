@@ -1,17 +1,16 @@
 import React, { PropTypes } from 'react';
 
-function FormError({ pristine, formErrors }) {
-
-  if (!formErrors || !formErrors.length) return <div />
+function FormErrors({ pristine, formErrors }) {
+  if (pristine || !formErrors || !formErrors.length) return <div />
 
   const errorMap = formErrors.map((error, i) => <p key={i}>Form error #{i}: {error}</p>)
 
   return <div>{ errorMap }</div>
 }
 
-FormError.propTypes = {
+FormErrors.propTypes = {
   pristine: PropTypes.bool,
-  formErrors: PropTypes.string,
+  formErrors: PropTypes.arrayOf(PropTypes.string.isRequired),
 }
 
-export default FormError
+export default FormErrors

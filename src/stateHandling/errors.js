@@ -1,5 +1,7 @@
 import _ from 'lodash'
 
+// ================================ FIELD ERRORS ===============================
+
 function updateSimpleErrors(check, value, simpleErrors) {
   const newError = check.func(value)
   const errorAlreadyInArray = simpleErrors.includes(newError.value)
@@ -54,13 +56,22 @@ export function updateFieldErrors(name, value, fields, fieldChecks) {
   return updatedFields
 }
 
-export function updateFormErrors(checks, fields) {
-  let errors = []
 
-  // checks.forEach(check => {
-  //   error = check(fields)
-  //   if (error) return
-  // })
+// ================================ FORM ERRORS ================================s
+
+export function updateFormErrors(formErrors, checks, fields) {
+  let errors = formErrors
+  let newError
+
+  checks.forEach(check => {
+    newError = check(fields)
+
+    if (newError.bool && !errors.includes(newError.value)) {
+      errors = [ ...errors, newError.value ]
+    } else if (!newError.bool && errors.includes(newError.value)) {
+      errors = _.filter(errors, (error) => error !== newError.value)
+    }
+  })
 
   return errors
 }

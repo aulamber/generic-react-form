@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 
-import { isTooLong, isDifferentFrom } from './checks'
+import {
+  isTooLong,
+  isDifferentFrom,
+  hasEmptyFields,
+  isSumWithinRange,
+} from './checks'
 
 import './App.css';
-import Form from './Form'
-import Input from './Input'
+import Form from './form/Form'
+import Input from './form/Input'
 import FieldErrors from './FieldErrors'
 import FormErrors from './FormErrors'
 
 // Fields to be injected inside the form
 const fields = {
-  firstName: { value : 'eeeeeeee', isRequired: true },
+  firstName: { value : '', isRequired: true },
   lastName: { value: '', isRequired: true },
 }
 
@@ -26,15 +31,18 @@ const fieldChecks = {
   ],
 }
 
+// Verifications to be done for the whole form
+const formChecks = [ hasEmptyFields, isSumWithinRange(0, 100) ]
+
 
 class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { fields, formError: '', disabled: true }
+    this.state = { fields, formErrors: [], disabled: true }
 
     this.getFields = this.getFields.bind(this)
-    this.getFormError = this.getFormError.bind(this)
+    this.getFormErrors = this.getFormErrors.bind(this)
     this.getDisabledStatus = this.getDisabledStatus.bind(this)
   }
 
@@ -42,7 +50,7 @@ class App extends Component {
     this.setState({ fields })
   }
 
-  getFormError(formError) {
+  getFormErrors(formError) {
     this.setState({ formError })
   }
 
@@ -58,9 +66,9 @@ class App extends Component {
         <Form
           fields={fields}
           fieldChecks={fieldChecks}
-          formChecks={[]}
+          formChecks={formChecks}
           giveFieldsToParent={this.getFields}
-          giveFormErrorToParent={this.getFormError}
+          giveFormErrorsToParent={this.getFormErrors}
           giveDisabledStatusToParent={this.getDisabledStatus}
         >
           <Input name="firstName" fieldChecks={fieldChecks.firstName} />
@@ -68,9 +76,9 @@ class App extends Component {
 
           <Input name="lastName" fieldChecks={fieldChecks.lastName} />
           <FieldErrors name="lastName" />
-        </Form>
 
-        <FormErrors />
+          <FormErrors />
+        </Form>
 
         <button type='submit' disabled={disabled}> SUBMIT </button>
       </div>

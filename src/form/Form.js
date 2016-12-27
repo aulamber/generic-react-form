@@ -3,20 +3,20 @@ import React, { Component, PropTypes } from 'react';
 import {
   updateDisableStatus,
   initializeFields,
-  updateFormErrors
-} from './stateHandling/index'
+  updateFormErrors,
+} from '../stateHandling/index'
 
 
 class Form extends Component {
   constructor(props) {
     super(props)
 
-    const {fields, fieldChecks} = this.props
+    const {fields, fieldChecks, formChecks} = this.props
 
     this.state = {
       pristine: true,
       fields: initializeFields(fields, fieldChecks),
-      formErrors: [],
+      formErrors: updateFormErrors([], formChecks, fields),
       disabled: updateDisableStatus(fields, []),
     }
 
@@ -29,6 +29,7 @@ class Form extends Component {
 
   componentDidMount() {
     this.props.giveFieldsToParent(this.state.fields)
+    this.props.giveFormErrorsToParent(this.state.formErrors)
     this.props.giveDisabledStatusToParent(this.state.disabled)
   }
 
@@ -40,8 +41,8 @@ class Form extends Component {
     this.setState({ fields }, () => this.props.giveFieldsToParent(fields))
   }
 
-  setFormErrors(fields) {
-    this.setState({ formErrors: updateFormErrors(this.props.formChecks, fields) })
+  setFormErrors(formErrors) {
+    this.setState({ formErrors }, () => this.props.giveFormErrorsToParent(formErrors))
   }
 
   setDisableStatus(disabled) {
@@ -63,9 +64,11 @@ class Form extends Component {
             child => React.cloneElement(child, {
               pristine,
               fields,
+              formChecks: this.props.formChecks,
               formErrors,
+              setFormPristine: this.setFormPristine,
               setFields: this.setFields,
-              setFormErrors: this.setFormError,
+              setFormErrors: this.setFormErrors,
               setDisableStatus: this.setDisableStatus,
               getFieldValue: this.getFieldValue,
             })
@@ -81,7 +84,7 @@ Form.propTypes = {
   fieldChecks: PropTypes.shape().isRequired,
   formChecks: PropTypes.arrayOf(PropTypes.func),
   giveFieldsToParent: PropTypes.func.isRequired,
-  giveFormErrorToParent: PropTypes.func.isRequired,
+  giveFormErrorsToParent: PropTypes.func.isRequired,
   giveDisabledStatusToParent: PropTypes.func.isRequired,
 }
 

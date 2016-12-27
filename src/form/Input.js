@@ -4,8 +4,9 @@ import React, { Component, PropTypes } from 'react';
 import {
   updateDisableStatus,
   updateFieldValue,
-  updateFieldErrors
-} from './stateHandling/index'
+  updateFieldErrors,
+  updateFormErrors,
+} from '../stateHandling/index'
 
 
 class Input extends Component {
@@ -16,18 +17,20 @@ class Input extends Component {
   }
 
   handleOnChange(e) {
-    const { name, fields, fieldChecks, formErrors, setFields, setDisableStatus/*, setFormErrors*/ } = this.props
+    const { pristine, name, fields, fieldChecks, formChecks, formErrors } = this.props
+    const { setFormPristine, setFields, setDisableStatus, setFormErrors } = this.props
     const value = e.target.value
     let updatedFields = fields
 
     updatedFields = updateFieldValue(name, value, updatedFields)
     updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks)
-    const disabled = updateDisableStatus(updatedFields, formErrors)
+    const updatedFormErrors = updateFormErrors(formErrors, formChecks, updatedFields)
+    const disabled = updateDisableStatus(updatedFields, updatedFormErrors)
 
+    if (pristine) { setFormPristine() }
     setFields(updatedFields)
+    setFormErrors(updatedFormErrors)
     setDisableStatus(disabled)
-
-    // setFormErrors({ ...fields, [name]: { ...fields[name], value } })
   }
 
   render() {
@@ -51,6 +54,7 @@ Input.propTypes = {
   fieldChecks: PropTypes.arrayOf(PropTypes.shape().isRequired),
   formErrors: PropTypes.arrayOf(PropTypes.string.isRequired),
   formChecks: PropTypes.arrayOf(PropTypes.func.isRequired),
+  setFormPristine: PropTypes.func,
   setFields: PropTypes.func,
   setFormErrors: PropTypes.func,
   setDisableStatus: PropTypes.func,
