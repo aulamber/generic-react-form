@@ -11,7 +11,7 @@ import FormErrors from './FormErrors'
 // Fields to be injected inside the form
 const fields = {
   firstName: { value : 'eeeeeeee', isRequired: true },
-  lastName: { value: 'eeeeeeee', isRequired: false },
+  lastName: { value: '', isRequired: true },
 }
 
 // Verifications to be done for each field
@@ -39,7 +39,6 @@ class App extends Component {
   }
 
   getFields(fields) {
-    // console.log('Dans APP, fields = ', fields);
     this.setState({ fields })
   }
 
@@ -52,9 +51,7 @@ class App extends Component {
   }
 
   render() {
-    const {fields/*, disabled*/} = this.state
-
-    console.log('les champs du formulaire = ', fields);
+    const {fields, disabled} = this.state
 
     return (
       <div className="App">
@@ -75,7 +72,7 @@ class App extends Component {
 
         <FormErrors />
 
-        <button type='submit' disabled={this.state.disabled}> SUBMIT </button>
+        <button type='submit' disabled={disabled}> SUBMIT </button>
       </div>
     );
   }

@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import React, { Component, PropTypes } from 'react';
 
-import { updateFieldErrors } from './errorHandling'
+import { updateDisableStatus, updateFieldErrors } from './stateHandling/stateHandling'
 
-//   this.props.setFieldError(this.props.name, !!error)
+
 class Input extends Component {
   constructor(props) {
     super(props)
@@ -20,15 +20,19 @@ class Input extends Component {
   }
 
   handleOnChange(e) {
-    const { name, fieldChecks, setFields/*, setFormError*/ } = this.props
+    const { name, fieldChecks, formErrors, setFields, setDisableStatus/*, setFormErrors*/ } = this.props
     const value = e.target.value
     let updatedFields = []
+    let disabled
 
     updatedFields = this.updateFieldValue(name, value)
     updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks)
     setFields(updatedFields)
 
-    // setFormError({ ...fields, [name]: { ...fields[name], value } })
+    disabled = updateDisableStatus(updatedFields, formErrors)
+    setDisableStatus(disabled)
+
+    // setFormErrors({ ...fields, [name]: { ...fields[name], value } })
   }
 
   render() {
@@ -48,16 +52,16 @@ class Input extends Component {
     )
   }
 }
-// {this.props.children}
-// ref={input => this[name] = input}
 
 Input.propTypes = {
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
   fieldChecks: PropTypes.arrayOf(PropTypes.shape().isRequired),
+  formErrors: PropTypes.arrayOf(PropTypes.string.isRequired),
   formChecks: PropTypes.arrayOf(PropTypes.func.isRequired),
   setFields: PropTypes.func,
-  setFormError: PropTypes.func,
+  setFormErrors: PropTypes.func,
+  setDisableStatus: PropTypes.func,
   getFieldValue: PropTypes.func,
 }
 

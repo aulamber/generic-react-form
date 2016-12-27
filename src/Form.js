@@ -1,25 +1,26 @@
+/*
+A FAIRE
+
+1) gestion de FormErrors
+2) faire un wrapper de fonction qui en cas de succès appelle la fonction
+  onSubmit de l'utilisateur, et en cas d'erreur de field s'occupe du 3)
+3) gestion du form.pristine && du field.pristine qui passe à false après
+  le submit pour permettre l'affichage des erreurs
+4) proposer à l'utilisateur du form une option pour soit afficher les erreurs
+  du formulaire dès le render initial du form, ou bien après !pristine
+  (aux onChange() + au submit)
+
+*/
+
+
 import React, { Component, PropTypes } from 'react';
 
-import { updateFieldErrors, updateFormErrors } from './errorHandling'
+import {
+  updateDisableStatus,
+  initializeFields,
+  updateFormErrors
+} from './stateHandling/stateHandling'
 
-function initializeFields(fields, checks) {
-  let stateFields = {}
-
-  Object.keys(fields).forEach(name => {
-    const fieldErrors = updateFieldErrors(name, fields[name].value, fields, checks[name])
-
-    stateFields = {
-      ...stateFields,
-      [name]: {
-        pristine: true,
-        value: fields[name].value || '',
-        errors: fieldErrors[name].errors,
-      },
-    }
-  })
-
-  return stateFields
-}
 
 class Form extends Component {
   constructor(props) {
@@ -31,12 +32,13 @@ class Form extends Component {
       pristine: true,
       fields: initializeFields(fields, fieldChecks),
       formErrors: [],
-      // disabled:
+      disabled: updateDisableStatus(fields, []),
     }
 
     this.setFormPristine = this.setFormPristine.bind(this)
     this.setFields = this.setFields.bind(this)
     this.setFormErrors = this.setFormErrors.bind(this)
+    this.setDisableStatus = this.setDisableStatus.bind(this)
     this.getFieldValue = this.getFieldValue.bind(this)
   }
 
@@ -66,6 +68,10 @@ class Form extends Component {
     this.setState({ formErrors })
   }
 
+  setDisableStatus(disabled) {
+    this.setState({ disabled }, () => this.props.giveDisabledStatusToParent(disabled))
+  }
+
   getFieldValue(field) {
     return this.state.fields[field].value
   }
@@ -81,9 +87,10 @@ class Form extends Component {
             pristine,
             fields,
             formErrors,
-            getFieldValue: this.getFieldValue,
             setFields: this.setFields,
-            setFormError: this.setFormError,
+            setFormErrors: this.setFormError,
+            setDisableStatus: this.setDisableStatus,
+            getFieldValue: this.getFieldValue,
           })
         )}
       </form>
