@@ -1,25 +1,10 @@
-/*
-A FAIRE
-
-1) gestion de FormErrors
-2) faire un wrapper de fonction qui en cas de succès appelle la fonction
-  onSubmit de l'utilisateur, et en cas d'erreur de field s'occupe du 3)
-3) gestion du form.pristine && du field.pristine qui passe à false après
-  le submit pour permettre l'affichage des erreurs
-4) proposer à l'utilisateur du form une option pour soit afficher les erreurs
-  du formulaire dès le render initial du form, ou bien après !pristine
-  (aux onChange() + au submit)
-
-*/
-
-
 import React, { Component, PropTypes } from 'react';
 
 import {
   updateDisableStatus,
   initializeFields,
   updateFormErrors
-} from './stateHandling/stateHandling'
+} from './stateHandling/index'
 
 
 class Form extends Component {
@@ -44,6 +29,7 @@ class Form extends Component {
 
   componentDidMount() {
     this.props.giveFieldsToParent(this.state.fields)
+    this.props.giveDisabledStatusToParent(this.state.disabled)
   }
 
   setFormPristine() {
@@ -51,21 +37,11 @@ class Form extends Component {
   }
 
   setFields(fields) {
-    this.setState({ fields }, () => {
-      // console.log('this.state.formErrors = ', this.state.formErrors);
-
-      // const disabled = Object.keys(fields).some((field) => field.errors.length)
-      //   || this.state.formErrors.length
-      // this.props.giveDisabledStatusToParent(this.state.fields)
-      this.props.giveFieldsToParent(fields)
-
-    })
+    this.setState({ fields }, () => this.props.giveFieldsToParent(fields))
   }
 
   setFormErrors(fields) {
-    const formErrors = updateFormErrors(this.props.formChecks, fields)
-
-    this.setState({ formErrors })
+    this.setState({ formErrors: updateFormErrors(this.props.formChecks, fields) })
   }
 
   setDisableStatus(disabled) {
@@ -81,18 +57,20 @@ class Form extends Component {
 
     return (
       <form>
-        { React.Children.map(
-          this.props.children,
-          child => React.cloneElement(child, {
-            pristine,
-            fields,
-            formErrors,
-            setFields: this.setFields,
-            setFormErrors: this.setFormError,
-            setDisableStatus: this.setDisableStatus,
-            getFieldValue: this.getFieldValue,
-          })
-        )}
+        {
+          React.Children.map(
+            this.props.children,
+            child => React.cloneElement(child, {
+              pristine,
+              fields,
+              formErrors,
+              setFields: this.setFields,
+              setFormErrors: this.setFormError,
+              setDisableStatus: this.setDisableStatus,
+              getFieldValue: this.getFieldValue,
+            })
+          )
+        }
       </form>
     )
   }

@@ -1,35 +1,30 @@
 import _ from 'lodash'
 import React, { Component, PropTypes } from 'react';
 
-import { updateDisableStatus, updateFieldErrors } from './stateHandling/stateHandling'
+import {
+  updateDisableStatus,
+  updateFieldValue,
+  updateFieldErrors
+} from './stateHandling/index'
 
 
 class Input extends Component {
   constructor(props) {
     super(props)
 
-    this.updateFieldValue = this.updateFieldValue.bind(this)
     this.handleOnChange = this.handleOnChange.bind(this)
   }
 
-  updateFieldValue(name, value) {
-    return {
-      ...this.props.fields,
-      [name]: { ...this.props.fields[name], pristine: false, value },
-    }
-  }
-
   handleOnChange(e) {
-    const { name, fieldChecks, formErrors, setFields, setDisableStatus/*, setFormErrors*/ } = this.props
+    const { name, fields, fieldChecks, formErrors, setFields, setDisableStatus/*, setFormErrors*/ } = this.props
     const value = e.target.value
-    let updatedFields = []
-    let disabled
+    let updatedFields = fields
 
-    updatedFields = this.updateFieldValue(name, value)
+    updatedFields = updateFieldValue(name, value, updatedFields)
     updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks)
-    setFields(updatedFields)
+    const disabled = updateDisableStatus(updatedFields, formErrors)
 
-    disabled = updateDisableStatus(updatedFields, formErrors)
+    setFields(updatedFields)
     setDisableStatus(disabled)
 
     // setFormErrors({ ...fields, [name]: { ...fields[name], value } })
@@ -45,9 +40,6 @@ class Input extends Component {
           onChange={this.handleOnChange}
           placeholder='type something...'
         />
-
-        { this.props.children }
-
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import { updateFieldErrors } from './errors'
 
-export default function initializeFields(fields, checks) {
+export function initializeFields(fields, checks) {
   let stateFields = {}
 
   Object.keys(fields).forEach(name => {
@@ -18,4 +18,11 @@ export default function initializeFields(fields, checks) {
   })
 
   return stateFields
+}
+
+export function updateFieldValue(name, value, fields) {
+  return {
+    ...fields,
+    [name]: { ...fields[name], pristine: false, value },
+  }
 }

@@ -1,10 +1,11 @@
 import updateDisableStatus from './disableStatus'
-import initializeFields from './fields'
+import { initializeFields, updateFieldValue } from './fields'
 import { updateFieldErrors, updateFormErrors } from './errors'
 
 export {
   updateDisableStatus,
   initializeFields,
+  updateFieldValue,
   updateFieldErrors,
   updateFormErrors,
 }
