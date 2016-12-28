@@ -12,6 +12,7 @@ import Form from './form/Form'
 import Input from './form/Input'
 import FieldErrors from './FieldErrors'
 import FormErrors from './FormErrors'
+import SubmitButton from './SubmitButton'
 
 // Fields to be injected inside the form
 const fields = {
@@ -44,6 +45,8 @@ class App extends Component {
     this.getFields = this.getFields.bind(this)
     this.getFormErrors = this.getFormErrors.bind(this)
     this.getDisabledStatus = this.getDisabledStatus.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
+
   }
 
   getFields(fields) {
@@ -58,18 +61,23 @@ class App extends Component {
     this.setState({ disabled })
   }
 
-  render() {
-    const {fields, disabled} = this.state
+  onSubmit(values) {
+    console.log('Form submitted');
+    console.log('Values = ', values);
+  }
 
+  render() {
     return (
       <div className="App">
         <Form
-          fields={fields}
+          fields={this.state.fields}
           fieldChecks={fieldChecks}
           formChecks={formChecks}
+          displayErrorsFromStart={true}
           giveFieldsToParent={this.getFields}
           giveFormErrorsToParent={this.getFormErrors}
           giveDisabledStatusToParent={this.getDisabledStatus}
+          onSubmit={this.onSubmit}
         >
           <Input name="firstName" fieldChecks={fieldChecks.firstName} />
           <FieldErrors name="firstName" />
@@ -78,9 +86,9 @@ class App extends Component {
           <FieldErrors name="lastName" />
 
           <FormErrors />
-        </Form>
 
-        <button type='submit' disabled={disabled}> SUBMIT </button>
+          <SubmitButton onSubmit={this.onSubmit} />
+        </Form>
       </div>
     );
   }

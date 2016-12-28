@@ -1,3 +1,22 @@
+/*
+A FAIRE
+
+1) faire un wrapper de fonction qui en cas de succès appelle la fonction
+  onSubmit de l'utilisateur, et en cas d'erreur de field s'occupe du 3)
+2) gestion du form.pristine && du field.pristine qui passe à false après
+  le submit pour permettre l'affichage des erreurs
+3) proposer à l'utilisateur du form une option pour soit afficher les erreurs
+  du formulaire dès le render initial du form, ou bien après !pristine
+  (aux onChange() + au submit)
+4) gestion des multiples fieldsToCompare ('' -> []) + fieldsWithError ('' -> [])
+5) faire un composant de checkbox + radio + number + range (+ email ?)
+(moins important): email, url, date, color, time
+6) Transformer les messages d'erreur de string à constantes (pour pouvoir
+  personnaliser les messages d'erreur. Ex: 'Some fields are missing: firstName,
+  lastName'.
+
+*/
+
 import React, { Component, PropTypes } from 'react';
 
 import {
@@ -54,7 +73,7 @@ class Form extends Component {
   }
 
   render() {
-    const { pristine, fields, formErrors } = this.state
+    const { pristine, disabled, fields, formErrors } = this.state
 
     return (
       <form>
@@ -63,7 +82,9 @@ class Form extends Component {
             this.props.children,
             child => React.cloneElement(child, {
               pristine,
+              disabled,
               fields,
+              displayErrorsFromStart: this.props.displayErrorsFromStart,
               formChecks: this.props.formChecks,
               formErrors,
               setFormPristine: this.setFormPristine,
@@ -83,6 +104,7 @@ Form.propTypes = {
   fields: PropTypes.shape().isRequired,
   fieldChecks: PropTypes.shape().isRequired,
   formChecks: PropTypes.arrayOf(PropTypes.func),
+  displayErrorsFromStart: PropTypes.bool,
   giveFieldsToParent: PropTypes.func.isRequired,
   giveFormErrorsToParent: PropTypes.func.isRequired,
   giveDisabledStatusToParent: PropTypes.func.isRequired,
