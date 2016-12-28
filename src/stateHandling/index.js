@@ -1,6 +1,6 @@
 import updateDisableStatus from './disableStatus'
-import { initializeFields, updateFieldValue } from './fields'
-import { updateFieldErrors, updateFormErrors } from './errors'
+import { initializeFields, updateFieldValue, getFinalValues } from './fields'
+import { updateFieldErrors, updateFormErrors, hasFieldErrors } from './errors'
 
 export {
   updateDisableStatus,
@@ -8,4 +8,6 @@ export {
   updateFieldValue,
   updateFieldErrors,
   updateFormErrors,
+  hasFieldErrors,
+  getFinalValues,
 }

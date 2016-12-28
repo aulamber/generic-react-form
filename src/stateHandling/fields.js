@@ -26,3 +26,13 @@ export function updateFieldValue(name, value, fields) {
     [name]: { ...fields[name], pristine: false, value },
   }
 }
+
+export function getFinalValues(fields) {
+  let values = {}
+
+  Object.keys(fields).forEach(field => {
+    values = { ...values, [field]: fields[field].value }
+  })
+
+  return values
+}

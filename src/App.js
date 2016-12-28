@@ -73,7 +73,7 @@ class App extends Component {
           fields={this.state.fields}
           fieldChecks={fieldChecks}
           formChecks={formChecks}
-          displayErrorsFromStart={true}
+          displayErrorsFromStart={false}
           giveFieldsToParent={this.getFields}
           giveFormErrorsToParent={this.getFormErrors}
           giveDisabledStatusToParent={this.getDisabledStatus}
@@ -87,7 +87,7 @@ class App extends Component {
 
           <FormErrors />
 
-          <SubmitButton onSubmit={this.onSubmit} />
+          <SubmitButton />
         </Form>
       </div>
     );

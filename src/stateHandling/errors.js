@@ -56,6 +56,19 @@ export function updateFieldErrors(name, value, fields, fieldChecks) {
   return updatedFields
 }
 
+export function hasFieldErrors(fields) {
+  let fieldErrors = false
+
+  Object.keys(fields).forEach(field => {
+    if (fields[field].errors.length) {
+      fieldErrors = true
+      return
+    }
+  })
+
+  return fieldErrors
+}
+
 
 // ================================ FORM ERRORS ================================s
 

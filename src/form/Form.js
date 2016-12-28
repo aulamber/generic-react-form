@@ -1,19 +1,12 @@
 /*
 A FAIRE
 
-1) faire un wrapper de fonction qui en cas de succès appelle la fonction
-  onSubmit de l'utilisateur, et en cas d'erreur de field s'occupe du 3)
-2) gestion du form.pristine && du field.pristine qui passe à false après
-  le submit pour permettre l'affichage des erreurs
-3) proposer à l'utilisateur du form une option pour soit afficher les erreurs
-  du formulaire dès le render initial du form, ou bien après !pristine
-  (aux onChange() + au submit)
-4) gestion des multiples fieldsToCompare ('' -> []) + fieldsWithError ('' -> [])
-5) faire un composant de checkbox + radio + number + range (+ email ?)
-(moins important): email, url, date, color, time
-6) Transformer les messages d'erreur de string à constantes (pour pouvoir
+1) gestion des multiples fieldsToCompare ('' -> []) + fieldsWithError ('' -> [])
+2) Transformer les messages d'erreur de string à constantes (pour pouvoir
   personnaliser les messages d'erreur. Ex: 'Some fields are missing: firstName,
   lastName'.
+3) faire un composant de checkbox + radio + number + range (+ email ?)
+(moins important): email, url, date, color, time
 
 */
 
@@ -23,6 +16,8 @@ import {
   updateDisableStatus,
   initializeFields,
   updateFormErrors,
+  hasFieldErrors,
+  getFinalValues,
 } from '../stateHandling/index'
 
 
@@ -30,7 +25,7 @@ class Form extends Component {
   constructor(props) {
     super(props)
 
-    const {fields, fieldChecks, formChecks} = this.props
+    const { fields, fieldChecks, formChecks } = this.props
 
     this.state = {
       pristine: true,
@@ -44,6 +39,7 @@ class Form extends Component {
     this.setFormErrors = this.setFormErrors.bind(this)
     this.setDisableStatus = this.setDisableStatus.bind(this)
     this.getFieldValue = this.getFieldValue.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentDidMount() {
@@ -72,11 +68,30 @@ class Form extends Component {
     return this.state.fields[field].value
   }
 
+  handleSubmit(e) {
+    const { displayErrorsFromStart, onSubmit } = this.props
+    const { fields, formErrors } = this.state
+    const finalValues = getFinalValues(fields)
+
+    if (displayErrorsFromStart) {
+      onSubmit(finalValues)
+    } else {
+      let fieldErrors = hasFieldErrors(fields)
+
+      if (!fieldErrors && !formErrors.length) {
+        onSubmit(finalValues)
+      } else {
+        this.setFormPristine()
+      }
+    }
+    e.preventDefault()
+  }
+
   render() {
     const { pristine, disabled, fields, formErrors } = this.state
 
     return (
-      <form>
+      <div>
         {
           React.Children.map(
             this.props.children,
@@ -92,13 +107,18 @@ class Form extends Component {
               setFormErrors: this.setFormErrors,
               setDisableStatus: this.setDisableStatus,
               getFieldValue: this.getFieldValue,
+              handleSubmit: this.handleSubmit,
             })
           )
         }
-      </form>
+      </div>
     )
   }
 }
+
+Form.defaultProps = {
+  displayErrorsFromStart: false,
+};
 
 Form.propTypes = {
   fields: PropTypes.shape().isRequired,
@@ -108,6 +128,7 @@ Form.propTypes = {
   giveFieldsToParent: PropTypes.func.isRequired,
   giveFormErrorsToParent: PropTypes.func.isRequired,
   giveDisabledStatusToParent: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default Form

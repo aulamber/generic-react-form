@@ -13,10 +13,10 @@ class Input extends Component {
   constructor(props) {
     super(props)
 
-    this.handleOnChange = this.handleOnChange.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
 
-  handleOnChange(e) {
+  onChange(e) {
     const { pristine, name, fields, fieldChecks, formChecks, formErrors } = this.props
     const { setFormPristine, setFields, setDisableStatus, setFormErrors } = this.props
     const value = e.target.value
@@ -40,7 +40,7 @@ class Input extends Component {
       <div>
         <input
           value={getFieldValue(name)}
-          onChange={this.handleOnChange}
+          onChange={this.onChange}
           placeholder='type something...'
         />
       </div>
