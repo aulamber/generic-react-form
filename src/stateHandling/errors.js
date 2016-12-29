@@ -2,20 +2,6 @@ import _ from 'lodash'
 
 // ================================ FIELD ERRORS ===============================
 
-function updateSimpleErrors(check, value, simpleErrors) {
-  const newError = check.func(value)
-  const errorAlreadyInArray = simpleErrors.includes(newError.value)
-
-  if (newError.bool && !errorAlreadyInArray) {
-    simpleErrors = [...simpleErrors, newError.value]
-  }
-  if (!newError.bool && errorAlreadyInArray) {
-    simpleErrors = _.filter(simpleErrors, (error) => error !== newError.value);
-  }
-
-  return simpleErrors
-}
-
 function updateComparErrors(check, value, fields) {
   const { func, fieldToCompare, fieldWithError } = check
   const newError = func(value, fields[fieldToCompare].value)
@@ -32,6 +18,20 @@ function updateComparErrors(check, value, fields) {
   return comparErrors
 }
 
+function updateSimpleErrors(check, value, simpleErrors = []) {
+  const newError = check.func(value)
+  const errorAlreadyInArray = simpleErrors.includes(newError.value)
+
+  if (newError.bool && !errorAlreadyInArray) {
+    simpleErrors = [...simpleErrors, newError.value]
+  }
+  if (!newError.bool && errorAlreadyInArray) {
+    simpleErrors = _.filter(simpleErrors, (error) => error !== newError.value);
+  }
+
+  return simpleErrors
+}
+
 export function updateFieldErrors(name, value, fields, fieldChecks) {
   let updatedFields = fields
   let errors
@@ -40,7 +40,7 @@ export function updateFieldErrors(name, value, fields, fieldChecks) {
     const { fieldToCompare, fieldWithError } = check
 
     if (fieldToCompare === undefined) {
-      errors = updateSimpleErrors(check, value, updatedFields[name].errors = [])
+      errors = updateSimpleErrors(check, value, updatedFields[name].errors)
       updatedFields = { ...updatedFields, [name]: { ...updatedFields[name], errors } }
     } else {
       errors = updateComparErrors(check, value, updatedFields)

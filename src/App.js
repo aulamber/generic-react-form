@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 
 import {
   isTooLong,
+  isNumber,
   isDifferentFrom,
+  isSimilarTo,
   hasEmptyFields,
   isSumWithinRange,
 } from './checks'
 
 import './App.css';
 import Form from './form/Form'
+import Label from './Label'
 import Input from './form/Input'
 import FieldErrors from './FieldErrors'
 import FormErrors from './FormErrors'
@@ -16,19 +19,30 @@ import SubmitButton from './SubmitButton'
 
 // Fields to be injected inside the form
 const fields = {
-  firstName: { value : '', isRequired: true },
-  lastName: { value: '', isRequired: true },
+
+  amount1: { value : '', isRequired: true },
+  amount2: { value : '', isRequired: true },
+  amount3: { value: '', isRequired: true },
 }
 
-// Verifications to be done for each field
 const fieldChecks = {
-  firstName: [
+  amount1: [
     { func: isTooLong(6) },
-    { func: isDifferentFrom('firstName'), fieldToCompare: 'lastName', fieldWithError: 'lastName' },
+    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount2', fieldWithError: 'amount2' },
+    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount3', fieldWithError: 'amount3' },
+    { func: isNumber },
   ],
-  lastName: [
+  amount2: [
     { func: isTooLong(6) },
-    { func: isDifferentFrom('firstName'), fieldToCompare: 'firstName', fieldWithError: 'lastName' },
+    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount1', fieldWithError: 'amount2' },
+    { func: isSimilarTo('amount2'), fieldToCompare: 'amount3', fieldWithError: 'amount3' },
+    { func: isNumber },
+  ],
+  amount3: [
+    { func: isTooLong(6) },
+    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount1', fieldWithError: 'amount3' },
+    { func: isSimilarTo('amount2'), fieldToCompare: 'amount2', fieldWithError: 'amount3' },
+    { func: isNumber },
   ],
 }
 
@@ -79,11 +93,17 @@ class App extends Component {
           giveDisabledStatusToParent={this.getDisabledStatus}
           onSubmit={this.onSubmit}
         >
-          <Input name="firstName" fieldChecks={fieldChecks.firstName} />
-          <FieldErrors name="firstName" />
+          <Label label="AMOUNT 1:" />
+          <Input name="amount1" fieldChecks={fieldChecks.amount1} />
+          <FieldErrors name="amount1" />
 
-          <Input name="lastName" fieldChecks={fieldChecks.lastName} />
-          <FieldErrors name="lastName" />
+          <Label label="AMOUNT 2" />
+          <Input name="amount2" fieldChecks={fieldChecks.amount2} />
+          <FieldErrors name="amount2" />
+
+          <Label label="AMOUNT 3:" />
+          <Input name="amount3" fieldChecks={fieldChecks.amount3} />
+          <FieldErrors name="amount3" />
 
           <FormErrors />
 

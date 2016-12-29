@@ -8,11 +8,25 @@ export function isTooLong(length) {
   }
 }
 
+export function isNumber(value) {
+  const error = { bool: false, value: 'Should be a number.' }
+
+  return (value && !/^[0-9]+$/.test(value) ? { ...error, bool: true } : error)
+}
+
 export function isDifferentFrom(fieldToCompare) {
   return (field, otherField) => {
     const error = { bool: false, value: `Should be different from ${fieldToCompare}.` }
 
     return (field && field === otherField ? { ...error, bool: true } : error)
+  }
+}
+
+export function isSimilarTo(fieldToCompare) {
+  return (field, otherField) => {
+    const error = { bool: false, value: `Should be similar to ${fieldToCompare}.` }
+
+    return (field && field !== otherField ? { ...error, bool: true } : error)
   }
 }
 
