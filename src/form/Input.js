@@ -23,7 +23,7 @@ class Input extends Component {
     const value = e.target.value
 
     let updatedFields = updateFieldValue(name, value, fields)
-    updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks)
+    updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks[name])
     const updatedFormErrors = updateFormErrors(formErrors, formChecks, updatedFields)
     const disabled = updateDisableStatus(displayErrorsFromStart, updatedFields, updatedFormErrors)
 
@@ -53,7 +53,7 @@ Input.propTypes = {
   displayErrorsFromStart: PropTypes.bool,
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
-  fieldChecks: PropTypes.arrayOf(PropTypes.shape().isRequired),
+  fieldChecks: PropTypes.shape(),
   formErrors: PropTypes.arrayOf(PropTypes.string.isRequired),
   formChecks: PropTypes.arrayOf(PropTypes.func.isRequired),
   setFormPristine: PropTypes.func,

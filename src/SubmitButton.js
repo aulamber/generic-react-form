@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 
 function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit }) {
-  console.log('Dans SubmitButton, disabled = ', disabled);
   return (
     <button
       type='submit'

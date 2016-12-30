@@ -95,15 +95,15 @@ class App extends Component {
           onSubmit={this.onSubmit}
         >
           <Label label="AMOUNT 1:" />
-          <Input name="amount1" fieldChecks={fieldChecks.amount1} />
+          <Input name="amount1" />
           <FieldErrors name="amount1" />
 
           <Label label="AMOUNT 2" />
-          <Input name="amount2" fieldChecks={fieldChecks.amount2} />
+          <Input name="amount2" />
           <FieldErrors name="amount2" />
 
           <Label label="AMOUNT 3:" />
-          <Input name="amount3" fieldChecks={fieldChecks.amount3} />
+          <Input name="amount3" />
           <FieldErrors name="amount3" />
 
           <FormErrors />

@@ -6,8 +6,8 @@ A FAIRE
   personnaliser les messages d'erreur. Ex: 'Some fields are missing: firstName,
   lastName'.
 3) Afficher les erreurs de comparField (pb: fieldWithError disabled)
-3) PASSER EN REDUX
-4) faire un composant de checkbox + radio + number + range (+ email ?)
+4) PASSER EN REDUX
+5) faire un composant de checkbox + radio + number + range (+ email ?)
 (moins important): email, url, date, color, time
 
 */
@@ -91,8 +91,7 @@ class Form extends Component {
 
   render() {
     const { pristine, disabled, fields, formErrors } = this.state
-
-    // console.log('disabled = ', disabled);
+    const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
 
     return (
       <div>
@@ -102,9 +101,10 @@ class Form extends Component {
             child => React.cloneElement(child, {
               pristine,
               disabled,
+              displayErrorsFromStart,
               fields,
-              displayErrorsFromStart: this.props.displayErrorsFromStart,
-              formChecks: this.props.formChecks,
+              fieldChecks,
+              formChecks,
               formErrors,
               setFormPristine: this.setFormPristine,
               setFields: this.setFields,

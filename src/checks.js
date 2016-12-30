@@ -2,21 +2,33 @@
 
 export function isTooLong(length) {
   return (value) => {
-    const error = { bool: false, value: `Too long: should be ${length} max.` }
+    const error = {
+      name: 'isTooLong',
+      bool: false,
+      value: `Too long: should be ${length} max.`,
+    }
 
     return value.length <= length ? error : { ...error, bool: true }
   }
 }
 
 export function isNumber(value) {
-  const error = { bool: false, value: 'Should be a number.' }
+  const error = {
+    name: 'isNumber',
+    bool: false,
+    value: 'Should be a number.',
+  }
 
   return (value && !/^[0-9]+$/.test(value) ? { ...error, bool: true } : error)
 }
 
 export function isDifferentFrom(fieldToCompare) {
   return (field, otherField) => {
-    const error = { bool: false, value: `Should be different from ${fieldToCompare}.` }
+    const error = {
+      name: 'isDifferentFrom',
+      bool: false,
+      value: `Should be different from ${fieldToCompare}.`,
+    }
 
     return (field && field === otherField ? { ...error, bool: true } : error)
   }
@@ -24,7 +36,11 @@ export function isDifferentFrom(fieldToCompare) {
 
 export function isSimilarTo(fieldToCompare) {
   return (field, otherField) => {
-    const error = { bool: false, value: `Should be similar to ${fieldToCompare}.` }
+    const error = {
+      name: 'isSimilarTo',
+      bool: false,
+      value: `Should be similar to ${fieldToCompare}.`,
+    }
 
     return (field && field !== otherField ? { ...error, bool: true } : error)
   }
@@ -33,7 +49,11 @@ export function isSimilarTo(fieldToCompare) {
 // ================================ FORM CHECKS ================================
 
 export function hasEmptyFields(fields) {
-  const error = { bool: false, value: `Some fields are missing.` }
+  const error = {
+    name: 'hasEmptyFields',
+    bool: false,
+    value: `Some fields are missing.`,
+  }
 
   Object.keys(fields).forEach(field => {
     if (!fields[field].value && fields[field].isRequired) {
@@ -50,7 +70,11 @@ export function hasEmptyFields(fields) {
 
 export function isSumWithinRange(min, max) {
   return (fields) => {
-    const error = { bool: false, value: `The sum must be between ${min} and ${max}` }
+    const error = {
+      name: 'isSumWithinRange',
+      bool: false,
+      value: `The sum must be between ${min} and ${max}`,
+    }
     let sum = 0
 
     Object.keys(fields).forEach(field => {
