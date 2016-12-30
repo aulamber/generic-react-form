@@ -7,7 +7,7 @@ export default function updateDisableStatus(displayErrorsFromStart, fields, form
     Object.keys(fields).forEach(field => {
       const {isRequired, value, errors} = fields[field]
 
-      if ((isRequired && !value) || (errors && errors.length)) {
+      if ((isRequired && !value) || (errors && Object.keys(errors).length)) {
         disabled = true
         return
       }

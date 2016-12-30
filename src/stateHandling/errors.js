@@ -3,65 +3,63 @@ import _ from 'lodash'
 
 // ================================ FIELD ERRORS ===============================
 
-function updateComparErrors(check, value, fields) {
-  const { func, fieldToCompare, fieldWithError } = check
-  const newError = func(value, fields[fieldToCompare].value)
-  let comparErrors = fields[fieldWithError].errors || []
-  const errorAlreadyInArray = comparErrors.includes(newError.value)
+function updateFieldError(newError, errors = {}, displayStatus) {
+  const { type, bool, message } = newError
+  const errorAlreadyInArray = !!errors[type]
 
-  if (newError.bool && !errorAlreadyInArray) {
-    comparErrors = [...comparErrors, newError.value]
+  if (bool && !errorAlreadyInArray) {
+    const error = (displayStatus ===  undefined
+      ? { message }
+      : { message, displayStatus }
+    )
+    errors = { ...errors, [type]: error }
   }
-  if (!newError.bool && errorAlreadyInArray) {
-    comparErrors = _.filter(comparErrors, (error) => error !== newError.value);
-  }
-
-  return comparErrors
-}
-
-function updateSimpleErrors(check, value, simpleErrors = []) {
-  const newError = check.func(value)
-  const errorAlreadyInArray = simpleErrors.includes(newError.value)
-
-  if (newError.bool && !errorAlreadyInArray) {
-    simpleErrors = [...simpleErrors, newError.value]
-  }
-  if (!newError.bool && errorAlreadyInArray) {
-    simpleErrors = _.filter(simpleErrors, (error) => error !== newError.value);
+  if (!bool && errorAlreadyInArray) {
+    errors = _.omit(errors, type)
   }
 
-  return simpleErrors
+  return errors
 }
 
 export function updateFieldErrors(name, value, fields, fieldChecks) {
-  let updatedFields = fields
-  let errors
+  let errors = {}
 
   fieldChecks.forEach((check) => {
-    const { fieldToCompare, fieldWithError } = check
+    const { func, fieldToCompare, fieldWithError } = check
+    const displayStatus = (fields[name].pristine === undefined
+      ? false
+      : !fields[name].pristine
+    )
 
     if (fieldToCompare === undefined) {
-      errors = updateSimpleErrors(check, value, updatedFields[name].errors)
-      updatedFields = { ...updatedFields, [name]: { ...updatedFields[name], errors } }
+      const newError = func(value)
+      const simpleErrors = fields[name].errors
+
+      errors = updateFieldError(newError, simpleErrors)
+      fields = { ...fields, [name]: { ...fields[name], errors } }
     } else {
-      errors = updateComparErrors(check, value, updatedFields)
+      const otherValue = fields[fieldToCompare].value
+      const newError = func(value, otherValue)
+      const comparErrors = fields[fieldWithError].errors
+
+      errors = updateFieldError(newError, comparErrors, displayStatus)
 
       if (name !== fieldWithError) {
-        updatedFields = { ...updatedFields, [fieldWithError]: { ...updatedFields[fieldWithError], errors } }
+        fields = { ...fields, [fieldWithError]: { ...fields[fieldWithError], errors } }
       } else {
-        updatedFields = { ...updatedFields, [name]: { ...updatedFields[name], errors } }
+        fields = { ...fields, [name]: { ...fields[name], errors } }
       }
     }
   });
 
-  return updatedFields
+  return fields
 }
 
 export function hasFieldErrors(fields) {
   let fieldErrors = false
 
   Object.keys(fields).forEach(field => {
-    if (fields[field].errors.length) {
+    if (Object.keys(fields[field].errors).length) {
       fieldErrors = true
       return
     }
@@ -73,9 +71,8 @@ export function hasFieldErrors(fields) {
 
 // ================================ FORM ERRORS ================================
 
-export function updateFormErrors(formErrors, checks, fields) {
-  let errors = formErrors
-  let newError
+export function updateFormErrors(errors, checks, fields) {
+  let newError = {}
 
   checks.forEach(check => {
     newError = check(fields)

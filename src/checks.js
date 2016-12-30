@@ -3,9 +3,9 @@
 export function isTooLong(length) {
   return (value) => {
     const error = {
-      name: 'isTooLong',
+      type: 'isTooLong',
       bool: false,
-      value: `Too long: should be ${length} max.`,
+      message: `Too long: should be ${length} max.`,
     }
 
     return value.length <= length ? error : { ...error, bool: true }
@@ -14,9 +14,9 @@ export function isTooLong(length) {
 
 export function isNumber(value) {
   const error = {
-    name: 'isNumber',
+    type: 'isNumber',
     bool: false,
-    value: 'Should be a number.',
+    message: 'Should be a number.',
   }
 
   return (value && !/^[0-9]+$/.test(value) ? { ...error, bool: true } : error)
@@ -25,9 +25,9 @@ export function isNumber(value) {
 export function isDifferentFrom(fieldToCompare) {
   return (field, otherField) => {
     const error = {
-      name: 'isDifferentFrom',
+      type: 'isDifferentFrom',
       bool: false,
-      value: `Should be different from ${fieldToCompare}.`,
+      message: `Should be different from ${fieldToCompare}.`,
     }
 
     return (field && field === otherField ? { ...error, bool: true } : error)
@@ -37,9 +37,9 @@ export function isDifferentFrom(fieldToCompare) {
 export function isSimilarTo(fieldToCompare) {
   return (field, otherField) => {
     const error = {
-      name: 'isSimilarTo',
+      type: 'isSimilarTo',
       bool: false,
-      value: `Should be similar to ${fieldToCompare}.`,
+      message: `Should be similar to ${fieldToCompare}.`,
     }
 
     return (field && field !== otherField ? { ...error, bool: true } : error)
@@ -50,7 +50,7 @@ export function isSimilarTo(fieldToCompare) {
 
 export function hasEmptyFields(fields) {
   const error = {
-    name: 'hasEmptyFields',
+    // type: 'hasEmptyFields',
     bool: false,
     value: `Some fields are missing.`,
   }
@@ -71,7 +71,7 @@ export function hasEmptyFields(fields) {
 export function isSumWithinRange(min, max) {
   return (fields) => {
     const error = {
-      name: 'isSumWithinRange',
+      // type: 'isSumWithinRange',
       bool: false,
       value: `The sum must be between ${min} and ${max}`,
     }
