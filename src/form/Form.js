@@ -5,7 +5,9 @@ A FAIRE
 2) Transformer les messages d'erreur de string à constantes (pour pouvoir
   personnaliser les messages d'erreur. Ex: 'Some fields are missing: firstName,
   lastName'.
-3) faire un composant de checkbox + radio + number + range (+ email ?)
+3) Afficher les erreurs de comparField (pb: fieldWithError disabled)
+3) PASSER EN REDUX
+4) faire un composant de checkbox + radio + number + range (+ email ?)
 (moins important): email, url, date, color, time
 
 */
@@ -15,6 +17,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   updateDisableStatus,
   initializeFields,
+  updateFieldsPristine,
   updateFormErrors,
   hasFieldErrors,
   getFinalValues,
@@ -25,14 +28,12 @@ class Form extends Component {
   constructor(props) {
     super(props)
 
-    const { fields, fieldChecks, formChecks } = this.props
+    const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
+    const fields = initializeFields(this.props.fields, fieldChecks)
+    const formErrors = updateFormErrors([], formChecks, fields)
+    const disabled = updateDisableStatus(displayErrorsFromStart, fields, formErrors)
 
-    this.state = {
-      pristine: true,
-      fields: initializeFields(fields, fieldChecks),
-      formErrors: updateFormErrors([], formChecks, fields),
-      disabled: updateDisableStatus(fields, []),
-    }
+    this.state = { pristine: true, fields, formErrors, disabled }
 
     this.setFormPristine = this.setFormPristine.bind(this)
     this.setFields = this.setFields.bind(this)
@@ -81,6 +82,7 @@ class Form extends Component {
       if (!fieldErrors && !formErrors.length) {
         onSubmit(finalValues)
       } else {
+        this.setFields(updateFieldsPristine(fields))
         this.setFormPristine()
       }
     }
@@ -89,6 +91,8 @@ class Form extends Component {
 
   render() {
     const { pristine, disabled, fields, formErrors } = this.state
+
+    // console.log('disabled = ', disabled);
 
     return (
       <div>

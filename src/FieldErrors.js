@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
 
-function FieldErrors({ name, fields }) {
-  const { /*pristine, */errors } = fields[name]
+function FieldErrors({ displayErrorsFromStart, name, fields }) {
+  const { pristine, errors } = fields[name]
+  const hasNoError = (displayErrorsFromStart
+    ? !errors || !errors.length
+    : pristine || !errors || !errors.length
+  )
 
-  if (!errors || !errors.length) return <div />
+  if (hasNoError) return <div />
 
   const errorMap = errors.map((error, i) => <p key={i}>Field error #{i}: {error}</p>)
 
@@ -11,6 +15,7 @@ function FieldErrors({ name, fields }) {
 }
 
 FieldErrors.propTypes = {
+  displayErrorsFromStart: PropTypes.bool,
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
 }

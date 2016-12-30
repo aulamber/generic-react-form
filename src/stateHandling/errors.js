@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+
 // ================================ FIELD ERRORS ===============================
 
 function updateComparErrors(check, value, fields) {
@@ -70,7 +71,7 @@ export function hasFieldErrors(fields) {
 }
 
 
-// ================================ FORM ERRORS ================================s
+// ================================ FORM ERRORS ================================
 
 export function updateFormErrors(formErrors, checks, fields) {
   let errors = formErrors

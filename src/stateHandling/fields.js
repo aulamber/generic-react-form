@@ -36,3 +36,17 @@ export function getFinalValues(fields) {
 
   return values
 }
+
+
+export function updateFieldsPristine(fields) {
+  let updatedFields = fields
+
+  Object.keys(updatedFields).forEach(field => {
+    updatedFields = {
+      ...updatedFields,
+      [field]: { ...updatedFields[field], pristine: false },
+    }
+  })
+
+  return updatedFields
+}

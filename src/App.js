@@ -20,9 +20,9 @@ import SubmitButton from './SubmitButton'
 // Fields to be injected inside the form
 const fields = {
 
-  amount1: { value : '', isRequired: true },
-  amount2: { value : '', isRequired: true },
-  amount3: { value: '', isRequired: true },
+  amount1: { value : '1', isRequired: true },
+  amount2: { value : '1', isRequired: true },
+  amount3: { value: '2', isRequired: true },
 }
 
 const fieldChecks = {
@@ -81,6 +81,7 @@ class App extends Component {
   }
 
   render() {
+    console.log('this.state = ', this.state);
     return (
       <div className="App">
         <Form

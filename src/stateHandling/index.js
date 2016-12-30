@@ -1,5 +1,5 @@
 import updateDisableStatus from './disableStatus'
-import { initializeFields, updateFieldValue, getFinalValues } from './fields'
+import { initializeFields, updateFieldValue, getFinalValues, updateFieldsPristine } from './fields'
 import { updateFieldErrors, updateFormErrors, hasFieldErrors } from './errors'
 
 export {
@@ -7,6 +7,7 @@ export {
   initializeFields,
   updateFieldValue,
   updateFieldErrors,
+  updateFieldsPristine,
   updateFormErrors,
   hasFieldErrors,
   getFinalValues,

@@ -17,15 +17,15 @@ class Input extends Component {
   }
 
   onChange(e) {
-    const { pristine, name, fields, fieldChecks, formChecks, formErrors } = this.props
+    const { pristine, displayErrorsFromStart } = this.props
+    const { name, fields, fieldChecks, formChecks, formErrors } = this.props
     const { setFormPristine, setFields, setDisableStatus, setFormErrors } = this.props
     const value = e.target.value
-    let updatedFields = fields
 
-    updatedFields = updateFieldValue(name, value, updatedFields)
+    let updatedFields = updateFieldValue(name, value, fields)
     updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks)
     const updatedFormErrors = updateFormErrors(formErrors, formChecks, updatedFields)
-    const disabled = updateDisableStatus(updatedFields, updatedFormErrors)
+    const disabled = updateDisableStatus(displayErrorsFromStart, updatedFields, updatedFormErrors)
 
     if (pristine) { setFormPristine() }
     setFields(updatedFields)
@@ -49,6 +49,8 @@ class Input extends Component {
 }
 
 Input.propTypes = {
+  pristine: PropTypes.bool,
+  displayErrorsFromStart: PropTypes.bool,
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
   fieldChecks: PropTypes.arrayOf(PropTypes.shape().isRequired),

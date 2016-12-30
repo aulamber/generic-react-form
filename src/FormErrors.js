@@ -12,10 +12,6 @@ function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
   return <div>{ errorMap }</div>
 }
 
-FormErrors.defaultProps = {
-  displayErrorsFromStart: false,
-};
-
 FormErrors.propTypes = {
   pristine: PropTypes.bool,
   displayErrorsFromStart: PropTypes.bool,
