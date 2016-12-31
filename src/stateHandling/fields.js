@@ -50,3 +50,24 @@ export function updateFieldsPristine(fields) {
 
   return updatedFields
 }
+
+export function updateFieldsPostSubmit(fields) {
+  let errors = {}
+
+  Object.keys(fields).forEach(field => {
+    const fieldErrors = fields[field].errors
+
+    Object.keys(fieldErrors).forEach(error => {
+      if (fieldErrors[error].displayStatus !== undefined) {
+        errors = { ...fieldErrors, [error]: { ...fieldErrors[error], displayStatus: true } }
+      }
+    })
+
+    fields = {
+      ...fields,
+      [field]: { ...fields[field], pristine: false, errors },
+    }
+  })
+
+  return fields
+}

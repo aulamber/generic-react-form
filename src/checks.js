@@ -49,21 +49,22 @@ export function isSimilarTo(fieldToCompare) {
 // ================================ FORM CHECKS ================================
 
 export function hasEmptyFields(fields) {
-  const error = {
-    // type: 'hasEmptyFields',
+  let error = {
+    type: 'hasEmptyFields',
     bool: false,
-    value: `Some fields are missing.`,
+    message: `Some fields are missing: `,
   }
 
   Object.keys(fields).forEach(field => {
     if (!fields[field].value && fields[field].isRequired) {
-      error.bool = true
-      // error.value += ` ${field},`
+      error = { ...error, bool: true, message: `${error.message} ${field},` }
       return
     }
   })
 
-  // if (error.bool) { error.value = error.value.substring(0, error.value.length - 1); }
+  if (error.bool) {
+    error.message = `${error.message.substring(0, error.message.length - 1)}.`;
+  }
 
   return error
 }
@@ -71,9 +72,9 @@ export function hasEmptyFields(fields) {
 export function isSumWithinRange(min, max) {
   return (fields) => {
     const error = {
-      // type: 'isSumWithinRange',
+      type: 'isSumWithinRange',
       bool: false,
-      value: `The sum must be between ${min} and ${max}`,
+      message: `The sum must be between ${min} and ${max}`,
     }
     let sum = 0
 

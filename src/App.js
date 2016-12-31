@@ -19,7 +19,6 @@ import SubmitButton from './SubmitButton'
 
 // Fields to be injected inside the form
 const fields = {
-
   amount1: { value : 'e', isRequired: true },
   amount2: { value : 'e', isRequired: true },
   amount3: { value: 'e', isRequired: true },
@@ -27,10 +26,10 @@ const fields = {
 
 const fieldChecks = {
   amount1: [
-    { func: isTooLong(6) },
+    // { func: isTooLong(6) },
     { func: isDifferentFrom('amount1'), fieldToCompare: 'amount2', fieldWithError: 'amount2' },
     { func: isDifferentFrom('amount1'), fieldToCompare: 'amount3', fieldWithError: 'amount3' },
-    { func: isNumber },
+    // { func: isNumber },
   ],
   amount2: [
     { func: isTooLong(6) },
@@ -54,7 +53,7 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { fields, formErrors: [], disabled: true }
+    this.state = { fields, formErrors: {}, disabled: true }
 
     this.getFields = this.getFields.bind(this)
     this.getFormErrors = this.getFormErrors.bind(this)
@@ -67,8 +66,8 @@ class App extends Component {
     this.setState({ fields })
   }
 
-  getFormErrors(formError) {
-    this.setState({ formError })
+  getFormErrors(formErrors) {
+    this.setState({ formErrors })
   }
 
   getDisabledStatus(disabled) {
@@ -98,7 +97,7 @@ class App extends Component {
           <Input name="amount1" />
           <FieldErrors name="amount1" />
 
-          <Label label="AMOUNT 2" />
+          <Label label="AMOUNT 2:" />
           <Input name="amount2" />
           <FieldErrors name="amount2" />
 

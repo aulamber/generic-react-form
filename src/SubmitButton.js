@@ -4,7 +4,7 @@ function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit }) {
   return (
     <button
       type='submit'
-      disabled={displayErrorsFromStart && disabled}
+      disabled={disabled}
       onClick={handleSubmit}
     >
       SUBMIT

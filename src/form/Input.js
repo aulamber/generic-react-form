@@ -25,7 +25,7 @@ class Input extends Component {
     let updatedFields = updateFieldValue(name, value, fields)
     updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks[name])
     const updatedFormErrors = updateFormErrors(formErrors, formChecks, updatedFields)
-    const disabled = updateDisableStatus(displayErrorsFromStart, updatedFields, updatedFormErrors)
+    const disabled = updateDisableStatus(false, displayErrorsFromStart, updatedFields, updatedFormErrors)
 
     if (pristine) { setFormPristine() }
     setFields(updatedFields)
@@ -54,7 +54,7 @@ Input.propTypes = {
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
   fieldChecks: PropTypes.shape(),
-  formErrors: PropTypes.arrayOf(PropTypes.string.isRequired),
+  formErrors: PropTypes.shape(),
   formChecks: PropTypes.arrayOf(PropTypes.func.isRequired),
   setFormPristine: PropTypes.func,
   setFields: PropTypes.func,

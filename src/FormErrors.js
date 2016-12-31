@@ -1,13 +1,18 @@
 import React, { PropTypes } from 'react';
 
 function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
+  let errors = {}
+  if (formErrors) { errors = Object.keys(formErrors) }
+
   const hasNoError = (displayErrorsFromStart
-    ? !formErrors || !formErrors.length
-    : pristine || !formErrors || !formErrors.length
+    ? !formErrors || !errors.length
+    : pristine || !formErrors || !errors.length
   )
   if (hasNoError) return <div />
 
-  const errorMap = formErrors.map((error, i) => <p key={i}>Form error #{i}: {error}</p>)
+  const errorMap = errors.map((error, i) => {
+    return <p key={i}>Form error #{i}: {formErrors[error]}</p>
+  })
 
   return <div>{ errorMap }</div>
 }
@@ -15,7 +20,7 @@ function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
 FormErrors.propTypes = {
   pristine: PropTypes.bool,
   displayErrorsFromStart: PropTypes.bool,
-  formErrors: PropTypes.arrayOf(PropTypes.string.isRequired),
+  formErrors: PropTypes.shape(),
 }
 
 export default FormErrors

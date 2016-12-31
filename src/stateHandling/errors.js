@@ -7,7 +7,7 @@ function updateFieldError(newError, errors = {}, displayStatus) {
   const { type, bool, message } = newError
   const errorAlreadyInArray = !!errors[type]
 
-  if (bool && !errorAlreadyInArray) {
+  if (bool) {
     const error = (displayStatus ===  undefined
       ? { message }
       : { message, displayStatus }
@@ -18,7 +18,7 @@ function updateFieldError(newError, errors = {}, displayStatus) {
     errors = _.omit(errors, type)
   }
 
-  return errors
+  return errors || {}
 }
 
 export function updateFieldErrors(name, value, fields, fieldChecks) {
@@ -72,17 +72,16 @@ export function hasFieldErrors(fields) {
 // ================================ FORM ERRORS ================================
 
 export function updateFormErrors(errors, checks, fields) {
-  let newError = {}
-
   checks.forEach(check => {
-    newError = check(fields)
+    const {type, bool, message} = check(fields)
 
-    if (newError.bool && !errors.includes(newError.value)) {
-      errors = [ ...errors, newError.value ]
-    } else if (!newError.bool && errors.includes(newError.value)) {
-      errors = _.filter(errors, (error) => error !== newError.value)
+    if (bool) {
+      errors = { ...errors, [type]: message }
+    } else if (!bool && errors[type]) {
+      errors = _.omit(errors, type)
     }
   })
+
 
   return errors
 }

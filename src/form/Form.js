@@ -2,12 +2,8 @@
 A FAIRE
 
 1) gestion des multiples fieldsToCompare ('' -> []) + fieldsWithError ('' -> [])
-2) Transformer les messages d'erreur de string à constantes (pour pouvoir
-  personnaliser les messages d'erreur. Ex: 'Some fields are missing: firstName,
-  lastName'.
-3) Afficher les erreurs de comparField (pb: fieldWithError disabled)
-4) PASSER EN REDUX
-5) faire un composant de checkbox + radio + number + range (+ email ?)
+2) PASSER EN REDUX
+3) faire un composant de checkbox + radio + number + range (+ email ?)
 (moins important): email, url, date, color, time
 
 */
@@ -17,7 +13,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   updateDisableStatus,
   initializeFields,
-  updateFieldsPristine,
+  updateFieldsPostSubmit,
   updateFormErrors,
   hasFieldErrors,
   getFinalValues,
@@ -30,8 +26,8 @@ class Form extends Component {
 
     const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
     const fields = initializeFields(this.props.fields, fieldChecks)
-    const formErrors = updateFormErrors([], formChecks, fields)
-    const disabled = updateDisableStatus(displayErrorsFromStart, fields, formErrors)
+    const formErrors = updateFormErrors({}, formChecks, fields)
+    const disabled = updateDisableStatus(true, displayErrorsFromStart, fields, formErrors)
 
     this.state = { pristine: true, fields, formErrors, disabled }
 
@@ -78,12 +74,19 @@ class Form extends Component {
       onSubmit(finalValues)
     } else {
       let fieldErrors = hasFieldErrors(fields)
+      const updatedFields = updateFieldsPostSubmit(fields)
 
-      if (!fieldErrors && !formErrors.length) {
+      if (!fieldErrors && !Object.keys(formErrors).length) {
         onSubmit(finalValues)
       } else {
-        this.setFields(updateFieldsPristine(fields))
+        this.setFields(updatedFields)
         this.setFormPristine()
+        this.setDisableStatus(updateDisableStatus(
+          false,
+          displayErrorsFromStart,
+          updatedFields,
+          formErrors
+        ))
       }
     }
     e.preventDefault()
