@@ -26,10 +26,10 @@ const fields = {
 
 const fieldChecks = {
   amount1: [
-    // { func: isTooLong(6) },
+    { func: isTooLong(6) },
     { func: isDifferentFrom('amount1'), fieldToCompare: 'amount2', fieldWithError: 'amount2' },
     { func: isDifferentFrom('amount1'), fieldToCompare: 'amount3', fieldWithError: 'amount3' },
-    // { func: isNumber },
+    { func: isNumber },
   ],
   amount2: [
     { func: isTooLong(6) },

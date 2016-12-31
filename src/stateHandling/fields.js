@@ -12,7 +12,7 @@ export function initializeFields(fields, checks) {
         pristine: true,
         isRequired: fields[name].isRequired,
         value: fields[name].value || '',
-        errors: fieldErrors[name].errors,
+        errors: fieldErrors[name].errors || {},
       },
     }
   })

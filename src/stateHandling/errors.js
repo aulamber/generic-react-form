@@ -18,7 +18,7 @@ function updateFieldError(newError, errors = {}, displayStatus) {
     errors = _.omit(errors, type)
   }
 
-  return errors || {}
+  return errors
 }
 
 export function updateFieldErrors(name, value, fields, fieldChecks) {
@@ -32,6 +32,7 @@ export function updateFieldErrors(name, value, fields, fieldChecks) {
     )
 
     if (fieldToCompare === undefined) {
+
       const newError = func(value)
       const simpleErrors = fields[name].errors
 
