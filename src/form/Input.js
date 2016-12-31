@@ -34,11 +34,28 @@ class Input extends Component {
   }
 
   render() {
-    const { name, getFieldValue } = this.props
+    const { displayErrorsFromStart, fields, name, getFieldValue } = this.props
+    const displayErrors = (displayErrorsFromStart
+      ? !!(Object.keys(fields[name].errors).length)
+      : !fields[name].pristine && !!(Object.keys(fields[name].errors).length)
+    )
+    let styles = {
+      border: '1px solid #bfbfbf',
+      height: '30px',
+      width: '100px',
+      paddingLeft: '15px',
+      paddingRight: '15px',
+      color: '#666666',
+      fontSize: '16px',
+      borderRadius: '3px',
+    }
+
+    if (displayErrors) { styles = { ...styles, border: '1px solid red' } }
 
     return (
       <div>
         <input
+          style={styles}
           value={getFieldValue(name)}
           onChange={this.onChange}
           placeholder='type something...'

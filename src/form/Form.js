@@ -93,11 +93,17 @@ class Form extends Component {
   }
 
   render() {
+    const styles = {
+      width: '360px',
+      padding: '20px 0',
+      backgroundColor: '#f2f2f2',
+      borderRadius: '10px',
+    }
     const { pristine, disabled, fields, formErrors } = this.state
     const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
 
     return (
-      <div>
+      <div style={styles}>
         {
           React.Children.map(
             this.props.children,

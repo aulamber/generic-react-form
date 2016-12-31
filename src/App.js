@@ -27,21 +27,27 @@ const fields = {
 const fieldChecks = {
   amount1: [
     { func: isTooLong(6) },
-    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount2', fieldWithError: 'amount2' },
-    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount3', fieldWithError: 'amount3' },
     { func: isNumber },
   ],
   amount2: [
     { func: isTooLong(6) },
-    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount1', fieldWithError: 'amount2' },
-    { func: isSimilarTo('amount2'), fieldToCompare: 'amount3', fieldWithError: 'amount3' },
     { func: isNumber },
   ],
   amount3: [
     { func: isTooLong(6) },
-    { func: isDifferentFrom('amount1'), fieldToCompare: 'amount1', fieldWithError: 'amount3' },
-    { func: isSimilarTo('amount2'), fieldToCompare: 'amount2', fieldWithError: 'amount3' },
     { func: isNumber },
+  ],
+  comparChecks: [
+    {
+      func: isDifferentFrom('amount1'),
+      fieldsToCompare: ['amount1', 'amount2', 'amount3'],
+      fieldsWithError: ['amount2', 'amount3'],
+    },
+    {
+      func: isSimilarTo('amount2'),
+      fieldsToCompare: ['amount2', 'amount3'],
+      fieldsWithError: ['amount3'],
+    },
   ],
 }
 
@@ -81,18 +87,27 @@ class App extends Component {
 
   render() {
     console.log('this.state = ', this.state);
+    const styles = {
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: '170px'
+    }
+
     return (
-      <div className="App">
+      <div className="App" style={styles}>
         <Form
           fields={this.state.fields}
           fieldChecks={fieldChecks}
           formChecks={formChecks}
-          displayErrorsFromStart={false}
+          displayErrorsFromStart={true}
           giveFieldsToParent={this.getFields}
           giveFormErrorsToParent={this.getFormErrors}
           giveDisabledStatusToParent={this.getDisabledStatus}
           onSubmit={this.onSubmit}
         >
+          <FormErrors />
+
           <Label label="AMOUNT 1:" />
           <Input name="amount1" />
           <FieldErrors name="amount1" />
@@ -104,8 +119,6 @@ class App extends Component {
           <Label label="AMOUNT 3:" />
           <Input name="amount3" />
           <FieldErrors name="amount3" />
-
-          <FormErrors />
 
           <SubmitButton />
         </Form>

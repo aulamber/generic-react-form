@@ -2,6 +2,21 @@ import React, { PropTypes } from 'react';
 
 function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
   let errors = {}
+  const styles = {
+    container: {
+      margin: 'auto',
+      width: '320px',
+      color: 'white',
+      backgroundColor: '#ffaa80',
+      borderRadius: '10px',
+      padding: '1px',
+      marginBottom: '35px',
+    },
+    title: {
+      fontWeight: 'bold',
+    },
+  }
+
   if (formErrors) { errors = Object.keys(formErrors) }
 
   const hasNoError = (displayErrorsFromStart
@@ -11,10 +26,15 @@ function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
   if (hasNoError) return <div />
 
   const errorMap = errors.map((error, i) => {
-    return <p key={i}>Form error #{i}: {formErrors[error]}</p>
+    return <p key={i}>{formErrors[error]}</p>
   })
 
-  return <div>{ errorMap }</div>
+  return (
+    <div style={styles.container}>
+      <p style={styles.title}>Form errors:</p>
+      { errorMap }
+    </div>
+  )
 }
 
 FormErrors.propTypes = {

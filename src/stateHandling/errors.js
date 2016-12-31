@@ -22,35 +22,13 @@ function updateFieldError(newError, errors = {}, displayStatus) {
 }
 
 export function updateFieldErrors(name, value, fields, fieldChecks) {
-  let errors = {}
+  let errors = fields[name].errors
 
   fieldChecks.forEach((check) => {
-    const { func, fieldToCompare, fieldWithError } = check
-    const displayStatus = (fields[name].pristine === undefined
-      ? false
-      : !fields[name].pristine
-    )
+    const newError = check.func(value)
 
-    if (fieldToCompare === undefined) {
-
-      const newError = func(value)
-      const simpleErrors = fields[name].errors
-
-      errors = updateFieldError(newError, simpleErrors)
-      fields = { ...fields, [name]: { ...fields[name], errors } }
-    } else {
-      const otherValue = fields[fieldToCompare].value
-      const newError = func(value, otherValue)
-      const comparErrors = fields[fieldWithError].errors
-
-      errors = updateFieldError(newError, comparErrors, displayStatus)
-
-      if (name !== fieldWithError) {
-        fields = { ...fields, [fieldWithError]: { ...fields[fieldWithError], errors } }
-      } else {
-        fields = { ...fields, [name]: { ...fields[name], errors } }
-      }
-    }
+    errors = updateFieldError(newError, errors)
+    fields = { ...fields, [name]: { ...fields[name], errors } }
   });
 
   return fields

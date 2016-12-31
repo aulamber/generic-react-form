@@ -37,29 +37,13 @@ export function getFinalValues(fields) {
   return values
 }
 
-
-export function updateFieldsPristine(fields) {
-  let updatedFields = fields
-
-  Object.keys(updatedFields).forEach(field => {
-    updatedFields = {
-      ...updatedFields,
-      [field]: { ...updatedFields[field], pristine: false },
-    }
-  })
-
-  return updatedFields
-}
-
 export function updateFieldsPostSubmit(fields) {
-  let errors = {}
-
   Object.keys(fields).forEach(field => {
-    const fieldErrors = fields[field].errors
+    let errors = fields[field].errors
 
-    Object.keys(fieldErrors).forEach(error => {
-      if (fieldErrors[error].displayStatus !== undefined) {
-        errors = { ...fieldErrors, [error]: { ...fieldErrors[error], displayStatus: true } }
+    Object.keys(errors).forEach(error => {
+      if (errors[error].displayStatus !== undefined) {
+        errors = { ...errors, [error]: { ...errors[error], displayStatus: true } }
       }
     })
 
