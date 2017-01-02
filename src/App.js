@@ -4,49 +4,43 @@ import {
   isTooLong,
   isNumber,
   isDifferentFrom,
-  isSimilarTo,
   hasEmptyFields,
   isSumWithinRange,
-} from './checks'
+} from './utils/checks'
 
 import './App.css';
 import Form from './form/Form'
-import Label from './Label'
 import Input from './form/Input'
-import FieldErrors from './FieldErrors'
-import FormErrors from './FormErrors'
-import SubmitButton from './SubmitButton'
+import Label from './userComponents/Label'
+import FieldErrors from './userComponents/FieldErrors'
+import FormErrors from './userComponents/FormErrors'
+import SubmitButton from './userComponents/SubmitButton'
 
 // Fields to be injected inside the form
 const fields = {
   amount1: { value : 'e', isRequired: true },
   amount2: { value : 'e', isRequired: true },
   amount3: { value: 'e', isRequired: true },
+  amount4: { value: 'e', isRequired: true },
 }
 
+// Verifications to be done for each field, individually and compared to others
 const fieldChecks = {
-  amount1: [
-    { func: isTooLong(6) },
-    { func: isNumber },
-  ],
-  amount2: [
-    { func: isTooLong(6) },
-    { func: isNumber },
-  ],
-  amount3: [
-    { func: isTooLong(6) },
-    { func: isNumber },
-  ],
+  amount1: [ isTooLong(6), isNumber ],
+  amount2: [ isTooLong(6), isNumber ],
+  amount3: [ isTooLong(6), isNumber ],
+  amount4: [ isTooLong(6), isNumber ],
+
   comparChecks: [
     {
-      func: isDifferentFrom('amount1'),
-      fieldsToCompare: ['amount1', 'amount2', 'amount3'],
-      fieldsWithError: ['amount2', 'amount3'],
+      func: isDifferentFrom(true),
+      fieldsToCompare: ['amount2', 'amount3'],
+      comparedField: 'amount1',
     },
     {
-      func: isSimilarTo('amount2'),
-      fieldsToCompare: ['amount2', 'amount3'],
-      fieldsWithError: ['amount3'],
+      func: isDifferentFrom(false),
+      fieldsToCompare: ['amount3'],
+      comparedField: 'amount2',
     },
   ],
 }
@@ -65,7 +59,6 @@ class App extends Component {
     this.getFormErrors = this.getFormErrors.bind(this)
     this.getDisabledStatus = this.getDisabledStatus.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
-
   }
 
   getFields(fields) {
@@ -86,12 +79,11 @@ class App extends Component {
   }
 
   render() {
-    console.log('this.state = ', this.state);
     const styles = {
       height: '100%',
       display: 'flex',
       justifyContent: 'center',
-      marginTop: '170px'
+      marginTop: '60px'
     }
 
     return (
@@ -100,7 +92,7 @@ class App extends Component {
           fields={this.state.fields}
           fieldChecks={fieldChecks}
           formChecks={formChecks}
-          displayErrorsFromStart={true}
+          displayErrorsFromStart={false}
           giveFieldsToParent={this.getFields}
           giveFormErrorsToParent={this.getFormErrors}
           giveDisabledStatusToParent={this.getDisabledStatus}
@@ -119,6 +111,10 @@ class App extends Component {
           <Label label="AMOUNT 3:" />
           <Input name="amount3" />
           <FieldErrors name="amount3" />
+
+          <Label label="AMOUNT 4:" />
+          <Input name="amount4" />
+          <FieldErrors name="amount4" />
 
           <SubmitButton />
         </Form>

@@ -1,7 +1,12 @@
 import React, { PropTypes } from 'react';
 
 function FieldErrors({ displayErrorsFromStart, name, fields }) {
-  const styles = { color: 'red' }
+  const styles = {
+    color: 'red',
+    width: '165px',
+    margin: 'auto',
+    textAlign: 'left',
+  }
   const { errors } = fields[name]
 
   if (!errors || !Object.keys(errors).length) return <div />
@@ -21,10 +26,10 @@ function FieldErrors({ displayErrorsFromStart, name, fields }) {
     })
 
     .map((error, i) => {
-      return <p style={styles} key={i}>{errors[error].message}</p>
+      return <p key={i}>{errors[error].message}</p>
     })
 
-  return <div>{ errorMap }</div>
+  return <div style={styles}>{ errorMap }</div>
 }
 
 FieldErrors.propTypes = {

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 
 function FieldErrors({ label }) {
-  return <p>{ label }</p>
+  const styles = { marginTop: '30px' }
+  return <p style={styles} >{ label }</p>
 }
 
 FieldErrors.propTypes = {

@@ -1,9 +1,8 @@
 /*
 A FAIRE
 
-1) gestion des multiples fieldsToCompare ('' -> []) + fieldsWithError ('' -> [])
-2) PASSER EN REDUX
-3) faire un composant de checkbox + radio + number + range (+ email ?)
+1) PASSER EN REDUX
+2) faire un composant de checkbox + radio + number + range (+ email ?)
 (moins important): email, url, date, color, time
 
 */
@@ -93,14 +92,14 @@ class Form extends Component {
   }
 
   render() {
+    const { pristine, disabled, fields, formErrors } = this.state
+    const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
     const styles = {
       width: '360px',
       padding: '20px 0',
-      backgroundColor: '#f2f2f2',
+      backgroundColor: (disabled ? '#f2f2f2' : '#b3ffb3'),
       borderRadius: '10px',
     }
-    const { pristine, disabled, fields, formErrors } = this.state
-    const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
 
     return (
       <div style={styles}>

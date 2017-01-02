@@ -18,17 +18,19 @@ class Input extends Component {
 
   onChange(e) {
     const { pristine, displayErrorsFromStart } = this.props
-    const { name, fields, fieldChecks, formChecks, formErrors } = this.props
+    const { name, fieldChecks, formChecks, formErrors } = this.props
     const { setFormPristine, setFields, setDisableStatus, setFormErrors } = this.props
     const value = e.target.value
+    let fields = this.props.fields
 
-    let updatedFields = updateFieldValue(name, value, fields)
-    updatedFields = updateFieldErrors(name, value, updatedFields, fieldChecks[name])
-    const updatedFormErrors = updateFormErrors(formErrors, formChecks, updatedFields)
-    const disabled = updateDisableStatus(false, displayErrorsFromStart, updatedFields, updatedFormErrors)
+    fields = updateFieldValue(name, value, fields)
+    fields = updateFieldErrors(name, value, fields, fieldChecks[name])
+    fields = updateFieldErrors(name, value, fields, fieldChecks.comparChecks, true)
+    const updatedFormErrors = updateFormErrors(formErrors, formChecks, fields)
+    const disabled = updateDisableStatus(false, displayErrorsFromStart, fields, updatedFormErrors)
 
     if (pristine) { setFormPristine() }
-    setFields(updatedFields)
+    setFields(fields)
     setFormErrors(updatedFormErrors)
     setDisableStatus(disabled)
   }
@@ -42,7 +44,7 @@ class Input extends Component {
     let styles = {
       border: '1px solid #bfbfbf',
       height: '30px',
-      width: '100px',
+      width: '160px',
       paddingLeft: '15px',
       paddingRight: '15px',
       color: '#666666',

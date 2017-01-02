@@ -4,15 +4,17 @@ export function initializeFields(fields, checks) {
   let stateFields = {}
 
   Object.keys(fields).forEach(name => {
-    const fieldErrors = updateFieldErrors(name, fields[name].value, fields, checks[name])
+    const { value } = fields[name]
+    fields = updateFieldErrors(name, value, fields, checks[name])
+    fields = updateFieldErrors(name, value, fields, checks.comparChecks, true)
 
     stateFields = {
       ...stateFields,
       [name]: {
         pristine: true,
         isRequired: fields[name].isRequired,
-        value: fields[name].value || '',
-        errors: fieldErrors[name].errors || {},
+        value: value || '',
+        errors: fields[name].errors || {},
       },
     }
   })
