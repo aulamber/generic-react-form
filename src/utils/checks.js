@@ -19,7 +19,7 @@ export function isTooLong(length) {
     const error = {
       type: 'isTooLong',
       bool: false,
-      message: `Too long: should be ${length} max.`,
+      message: `Too long: should be ${length} characters max.`,
     }
 
     return value.length <= length ? error : { ...error, bool: true }

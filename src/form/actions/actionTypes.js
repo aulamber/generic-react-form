@@ -1,0 +1,4 @@
+export const SET_FORM_PRISTINE = 'SET_FORM_PRISTINE';
+export const SET_FIELDS = 'SET_FIELDS';
+export const SET_FORM_ERRORS = 'SET_FORM_ERRORS';
+export const SET_DISABLE_STATUS = 'SET_DISABLE_STATUS';

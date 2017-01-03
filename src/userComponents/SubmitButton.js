@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit }) {
   let styles = {
@@ -32,4 +33,8 @@ SubmitButton.propTypes = {
   handleSubmit: PropTypes.func,
 }
 
-export default SubmitButton
+function mapStateToProps({ formReducer }) {
+  return { disabled: formReducer.disabled };
+}
+
+export default connect(mapStateToProps)(SubmitButton);

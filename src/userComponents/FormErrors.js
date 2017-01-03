@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
   let errors = {}
@@ -43,4 +44,10 @@ FormErrors.propTypes = {
   formErrors: PropTypes.shape(),
 }
 
-export default FormErrors
+function mapStateToProps({ formReducer }) {
+  const { pristine, formErrors } = formReducer
+
+  return { pristine, formErrors };
+}
+
+export default connect(mapStateToProps)(FormErrors);

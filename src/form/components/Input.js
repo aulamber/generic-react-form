@@ -1,6 +1,9 @@
 import _ from 'lodash'
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import * as actions from '../actions/index';
 import {
   updateDisableStatus,
   updateFieldValue,
@@ -18,25 +21,25 @@ class Input extends Component {
 
   onChange(e) {
     const { pristine, displayErrorsFromStart } = this.props
-    const { name, fieldChecks, formChecks, formErrors } = this.props
-    const { setFormPristine, setFields, setDisableStatus, setFormErrors } = this.props
+    const { name, fieldChecks, formChecks, actions } = this.props
     const value = e.target.value
     let fields = this.props.fields
+    let formErrors = this.props.formErrors
 
     fields = updateFieldValue(name, value, fields)
     fields = updateFieldErrors(name, value, fields, fieldChecks[name])
     fields = updateFieldErrors(name, value, fields, fieldChecks.comparChecks, true)
-    const updatedFormErrors = updateFormErrors(formErrors, formChecks, fields)
-    const disabled = updateDisableStatus(false, displayErrorsFromStart, fields, updatedFormErrors)
+    formErrors = updateFormErrors(formErrors, formChecks, fields)
+    const disabled = updateDisableStatus(false, displayErrorsFromStart, fields, formErrors)
 
-    if (pristine) { setFormPristine() }
-    setFields(fields)
-    setFormErrors(updatedFormErrors)
-    setDisableStatus(disabled)
+    if (pristine) { actions.setFormPristine() }
+    actions.setFields(fields)
+    actions.setFormErrors(formErrors)
+    actions.setDisableStatus(disabled)
   }
 
   render() {
-    const { displayErrorsFromStart, fields, name, getFieldValue } = this.props
+    const { displayErrorsFromStart, fields, name } = this.props
     const displayErrors = (displayErrorsFromStart
       ? !!(Object.keys(fields[name].errors).length)
       : !fields[name].pristine && !!(Object.keys(fields[name].errors).length)
@@ -58,7 +61,7 @@ class Input extends Component {
       <div>
         <input
           style={styles}
-          value={getFieldValue(name)}
+          value={fields[name].value}
           onChange={this.onChange}
           placeholder='type something...'
         />
@@ -72,14 +75,20 @@ Input.propTypes = {
   displayErrorsFromStart: PropTypes.bool,
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
-  fieldChecks: PropTypes.shape(),
   formErrors: PropTypes.shape(),
+  fieldChecks: PropTypes.shape(),
   formChecks: PropTypes.arrayOf(PropTypes.func.isRequired),
-  setFormPristine: PropTypes.func,
-  setFields: PropTypes.func,
-  setFormErrors: PropTypes.func,
-  setDisableStatus: PropTypes.func,
-  getFieldValue: PropTypes.func,
+  actions: PropTypes.shape().isRequired,
 }
 
-export default Input
+function mapStateToProps({ formReducer }) {
+  const { pristine, fields, formErrors } = formReducer;
+
+  return { pristine, fields, formErrors };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(actions, dispatch) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Input);

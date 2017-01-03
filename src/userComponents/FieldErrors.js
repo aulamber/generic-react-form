@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 function FieldErrors({ displayErrorsFromStart, name, fields }) {
+  console.log('nnnnnn displayErrorsFromStart = ', displayErrorsFromStart);
+  console.log('nnnnnn name = ', name);
+  console.log('nnnnnn fields = ', fields);
   const styles = {
     color: 'red',
     width: '165px',
@@ -38,4 +42,8 @@ FieldErrors.propTypes = {
   fields: PropTypes.shape(),
 }
 
-export default FieldErrors
+function mapStateToProps({ formReducer }) {
+  return { fields: formReducer.fields };
+}
+
+export default connect(mapStateToProps)(FieldErrors);

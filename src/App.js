@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 import {
   isTooLong,
@@ -9,20 +10,13 @@ import {
 } from './utils/checks'
 
 import './App.css';
-import Form from './form/Form'
-import Input from './form/Input'
+import Form from './form/components/Form'
+import FormWrapper from './userComponents/FormWrapper'
+import Input from './form/components/Input'
 import Label from './userComponents/Label'
 import FieldErrors from './userComponents/FieldErrors'
 import FormErrors from './userComponents/FormErrors'
 import SubmitButton from './userComponents/SubmitButton'
-
-// Fields to be injected inside the form
-const fields = {
-  amount1: { value : 'e', isRequired: true },
-  amount2: { value : 'e', isRequired: true },
-  amount3: { value: 'e', isRequired: true },
-  amount4: { value: 'e', isRequired: true },
-}
 
 // Verifications to be done for each field, individually and compared to others
 const fieldChecks = {
@@ -53,24 +47,20 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { fields, formErrors: {}, disabled: true }
+    const { amount1, amount2, amount3, amount4 } = this.props.fields
 
-    this.getFields = this.getFields.bind(this)
-    this.getFormErrors = this.getFormErrors.bind(this)
-    this.getDisabledStatus = this.getDisabledStatus.bind(this)
+    this.state = {
+      fields: {
+        amount1: { value : amount1, isRequired: true },
+        amount2: { value : amount2, isRequired: true },
+        amount3: { value: amount3, isRequired: true },
+        amount4: { value: amount4, isRequired: false },
+      },
+      formErrors: {},
+      disabled: true,
+    }
+
     this.onSubmit = this.onSubmit.bind(this)
-  }
-
-  getFields(fields) {
-    this.setState({ fields })
-  }
-
-  getFormErrors(formErrors) {
-    this.setState({ formErrors })
-  }
-
-  getDisabledStatus(disabled) {
-    this.setState({ disabled })
   }
 
   onSubmit(values) {
@@ -80,47 +70,66 @@ class App extends Component {
 
   render() {
     const styles = {
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: '60px'
+      app: {
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '60px'
+      },
+      form: {
+        width: '360px',
+        padding: '20px 0',
+        backgroundColor: (this.props.disabled ? '#f2f2f2' : '#b3ffb3'),
+        borderRadius: '10px',
+      }
     }
 
+    if (!this.state.fields) { return <div>Loading...</div> }
+
     return (
-      <div className="App" style={styles}>
+      <div className="App" style={styles.app}>
         <Form
-          fields={this.state.fields}
+          name="myFirstForm"
+          initialFields={this.state.fields}
           fieldChecks={fieldChecks}
           formChecks={formChecks}
-          displayErrorsFromStart={false}
-          giveFieldsToParent={this.getFields}
-          giveFormErrorsToParent={this.getFormErrors}
-          giveDisabledStatusToParent={this.getDisabledStatus}
+          displayErrorsFromStart={true}
           onSubmit={this.onSubmit}
         >
-          <FormErrors />
+          <FormWrapper styles={styles.form}>
+            <FormErrors />
 
-          <Label label="AMOUNT 1:" />
-          <Input name="amount1" />
-          <FieldErrors name="amount1" />
+            <Label label="AMOUNT 1:" />
+            <Input name="amount1" />
+            <FieldErrors name="amount1" />
 
-          <Label label="AMOUNT 2:" />
-          <Input name="amount2" />
-          <FieldErrors name="amount2" />
+            <Label label="AMOUNT 2:" />
+            <Input name="amount2" />
+            <FieldErrors name="amount2" />
 
-          <Label label="AMOUNT 3:" />
-          <Input name="amount3" />
-          <FieldErrors name="amount3" />
+            <Label label="AMOUNT 3:" />
+            <Input name="amount3" />
+            <FieldErrors name="amount3" />
 
-          <Label label="AMOUNT 4:" />
-          <Input name="amount4" />
-          <FieldErrors name="amount4" />
+            <Label label="AMOUNT 4:" />
+            <Input name="amount4" />
+            <FieldErrors name="amount4" />
 
-          <SubmitButton />
+            <SubmitButton />
+          </FormWrapper>
         </Form>
       </div>
     );
   }
 }
 
-export default App;
+Form.propTypes = {
+  disabled: PropTypes.bool,
+  fields: PropTypes.shape(),
+}
+
+function mapStateToProps({ appReducer, formReducer }) {
+  return { disabled: formReducer.disabled, fields: appReducer,  };
+}
+
+export default connect(mapStateToProps)(App);
