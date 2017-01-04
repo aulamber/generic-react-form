@@ -123,7 +123,7 @@ class App extends Component {
   }
 }
 
-Form.propTypes = {
+App.propTypes = {
   disabled: PropTypes.bool,
   fields: PropTypes.shape(),
 }

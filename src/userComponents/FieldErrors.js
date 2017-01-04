@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-function FieldErrors({ displayErrorsFromStart, name, fields }) {
+function FieldErrors({name, fields }, context) {
+  console.log('!!!!! context = ', context);
+  const { displayErrorsFromStart } = context
   console.log('nnnnnn displayErrorsFromStart = ', displayErrorsFromStart);
   console.log('nnnnnn name = ', name);
   console.log('nnnnnn fields = ', fields);

@@ -20,8 +20,8 @@ class Input extends Component {
   }
 
   onChange(e) {
-    const { pristine, displayErrorsFromStart } = this.props
-    const { name, fieldChecks, formChecks, actions } = this.props
+    const { pristine, name, actions } = this.props
+    const { displayErrorsFromStart, fieldChecks, formChecks } = this.context
     const value = e.target.value
     let fields = this.props.fields
     let formErrors = this.props.formErrors
@@ -39,8 +39,8 @@ class Input extends Component {
   }
 
   render() {
-    const { displayErrorsFromStart, fields, name } = this.props
-    const displayErrors = (displayErrorsFromStart
+    const { fields, name } = this.props
+    const displayErrors = (this.context.displayErrorsFromStart
       ? !!(Object.keys(fields[name].errors).length)
       : !fields[name].pristine && !!(Object.keys(fields[name].errors).length)
     )

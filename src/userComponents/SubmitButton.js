@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit }) {
+function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit = () => {} }) {
   let styles = {
     height: '40px',
     width: '100px',

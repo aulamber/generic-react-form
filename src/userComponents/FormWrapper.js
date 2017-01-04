@@ -14,9 +14,9 @@ function FormWrapper({
         React.Children.map(
           children,
           child => React.cloneElement(child, {
-            fieldChecks,
-            formChecks,
-            displayErrorsFromStart,
+            // fieldChecks,
+            // formChecks,
+            // displayErrorsFromStart,
             handleSubmit: handleSubmit,
           })
         )

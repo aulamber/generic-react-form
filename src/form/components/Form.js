@@ -5,6 +5,11 @@ A FAIRE
 2) Donner un nom à chaque formulaire et enregistrer la data au bon endroit dans redux
 3) faire un composant de checkbox + radio + number + range (+ email ?)
 (moins important): email, url, date, color, time
+4) enlever tout le non paramétrable (style, balises) non accessible au user dans Form et Input
+5) optimisation des perfs (limiter au max les boucles dans les boucles avec les forEach)
+6) tests
+7) doc + readme
+8) passage en module npm
 
 */
 
@@ -28,6 +33,14 @@ class Form extends Component {
     super(props)
 
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  getChildContext() {
+    return {
+      displayErrorsFromStart: this.props.displayErrorsFromStart,
+      fieldChecks: this.props.fieldChecks,
+      formChecks: this.props.formChecks,
+    };
   }
 
   componentWillMount() {
@@ -70,21 +83,17 @@ class Form extends Component {
   }
 
   render() {
-    const { displayErrorsFromStart, fieldChecks, formChecks } = this.props
-
     return (
       <div>
-        {
+        {/*
           React.Children.map(
             this.props.children,
             child => React.cloneElement(child, {
-              fieldChecks,
-              formChecks,
-              displayErrorsFromStart,
               handleSubmit: this.handleSubmit,
             })
           )
-        }
+        */}
+        {this.props.children}
       </div>
     )
   }
@@ -92,6 +101,12 @@ class Form extends Component {
 
 Form.defaultProps = {
   displayErrorsFromStart: false,
+};
+
+Form.childContextTypes = {
+  fieldChecks: PropTypes.shape(),
+  formChecks: PropTypes.arrayOf(PropTypes.func),
+  displayErrorsFromStart: PropTypes.bool,
 };
 
 Form.propTypes = {
