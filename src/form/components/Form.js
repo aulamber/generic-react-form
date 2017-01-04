@@ -83,19 +83,7 @@ class Form extends Component {
   }
 
   render() {
-    return (
-      <div>
-        {/*
-          React.Children.map(
-            this.props.children,
-            child => React.cloneElement(child, {
-              handleSubmit: this.handleSubmit,
-            })
-          )
-        */}
-        {this.props.children}
-      </div>
-    )
+    return <div>{this.props.children}</div>
   }
 }
 
@@ -104,8 +92,8 @@ Form.defaultProps = {
 };
 
 Form.childContextTypes = {
-  fieldChecks: PropTypes.shape(),
-  formChecks: PropTypes.arrayOf(PropTypes.func),
+  fieldChecks: PropTypes.shape().isRequired,
+  formChecks: PropTypes.arrayOf(PropTypes.func).isRequired,
   displayErrorsFromStart: PropTypes.bool,
 };
 

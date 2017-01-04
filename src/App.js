@@ -11,7 +11,6 @@ import {
 
 import './App.css';
 import Form from './form/components/Form'
-import FormWrapper from './userComponents/FormWrapper'
 import Input from './form/components/Input'
 import Label from './userComponents/Label'
 import FieldErrors from './userComponents/FieldErrors'
@@ -96,7 +95,7 @@ class App extends Component {
           displayErrorsFromStart={true}
           onSubmit={this.onSubmit}
         >
-          <FormWrapper styles={styles.form}>
+          <div style={styles.form}>
             <FormErrors />
 
             <Label label="AMOUNT 1:" />
@@ -116,7 +115,7 @@ class App extends Component {
             <FieldErrors name="amount4" />
 
             <SubmitButton />
-          </FormWrapper>
+          </div>
         </Form>
       </div>
     );

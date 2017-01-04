@@ -81,6 +81,12 @@ Input.propTypes = {
   actions: PropTypes.shape().isRequired,
 }
 
+Input.contextTypes = {
+  displayErrorsFromStart: PropTypes.bool,
+  fieldChecks: PropTypes.shape().isRequired,
+  formChecks: PropTypes.arrayOf(PropTypes.func).isRequired,
+}
+
 function mapStateToProps({ formReducer }) {
   const { pristine, fields, formErrors } = formReducer;
 

@@ -1,12 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-function FieldErrors({name, fields }, context) {
-  console.log('!!!!! context = ', context);
-  const { displayErrorsFromStart } = context
-  console.log('nnnnnn displayErrorsFromStart = ', displayErrorsFromStart);
-  console.log('nnnnnn name = ', name);
-  console.log('nnnnnn fields = ', fields);
+function FieldErrors({ name, fields }, { displayErrorsFromStart }) {
   const styles = {
     color: 'red',
     width: '165px',
@@ -42,6 +37,10 @@ FieldErrors.propTypes = {
   displayErrorsFromStart: PropTypes.bool,
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
+}
+
+FieldErrors.contextTypes = {
+  displayErrorsFromStart: PropTypes.bool
 }
 
 function mapStateToProps({ formReducer }) {

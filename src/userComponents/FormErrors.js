@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-function FormErrors({ pristine, displayErrorsFromStart, formErrors }) {
+function FormErrors({ pristine, formErrors }, { displayErrorsFromStart }) {
   let errors = {}
   const styles = {
     container: {
@@ -42,6 +42,10 @@ FormErrors.propTypes = {
   pristine: PropTypes.bool,
   displayErrorsFromStart: PropTypes.bool,
   formErrors: PropTypes.shape(),
+}
+
+FormErrors.contextTypes = {
+  displayErrorsFromStart: PropTypes.bool
 }
 
 function mapStateToProps({ formReducer }) {
