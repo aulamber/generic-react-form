@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit = () => {} }) {
+function SubmitButton({ disabled, onSubmit }) {
   let styles = {
     height: '40px',
     width: '100px',
@@ -20,7 +20,7 @@ function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit = () => {
       style={styles}
       type='submit'
       disabled={disabled}
-      onClick={handleSubmit}
+      onClick={onSubmit}
     >
       SUBMIT
     </button>
@@ -28,9 +28,8 @@ function SubmitButton({ displayErrorsFromStart, disabled, handleSubmit = () => {
 }
 
 SubmitButton.propTypes = {
-  displayErrorsFromStart: PropTypes.bool,
   disabled: PropTypes.bool,
-  handleSubmit: PropTypes.func,
+  onSubmit: PropTypes.func,
 }
 
 function mapStateToProps({ formReducer }) {

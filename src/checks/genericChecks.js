@@ -2,7 +2,7 @@ import {
   capitalize,
   changeLastCharToDot,
   changeLastCommaToAnd,
-} from './stringManipulation'
+} from '../utils/stringManipulation'
 
 // =============================================================================
 // =============================================================================

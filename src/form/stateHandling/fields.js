@@ -23,6 +23,8 @@ export function initializeFields(fields, checks) {
 }
 
 export function updateFieldValue(name, value, fields) {
+  if (!fields[name]) { return fields }
+
   return {
     ...fields,
     [name]: { ...fields[name], pristine: false, value },

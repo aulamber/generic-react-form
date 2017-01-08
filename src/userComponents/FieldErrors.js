@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 function FieldErrors({ name, fields }, { displayErrorsFromStart }) {
+  if (fields[name] === undefined) return <div />
+
   const styles = {
     color: 'red',
     width: '165px',
@@ -34,7 +36,6 @@ function FieldErrors({ name, fields }, { displayErrorsFromStart }) {
 }
 
 FieldErrors.propTypes = {
-  displayErrorsFromStart: PropTypes.bool,
   name: PropTypes.string.isRequired,
   fields: PropTypes.shape(),
 }

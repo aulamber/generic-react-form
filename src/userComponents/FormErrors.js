@@ -40,7 +40,6 @@ function FormErrors({ pristine, formErrors }, { displayErrorsFromStart }) {
 
 FormErrors.propTypes = {
   pristine: PropTypes.bool,
-  displayErrorsFromStart: PropTypes.bool,
   formErrors: PropTypes.shape(),
 }
 

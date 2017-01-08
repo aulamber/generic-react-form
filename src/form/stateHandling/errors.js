@@ -21,7 +21,7 @@ function updateFieldError(newError, errors = {}, displayStatus) {
   return errors
 }
 
-export function updateFieldErrors(name, value, fields, checks, comparChecks) {
+export function updateFieldErrors(name, value, fields, checks = [], comparChecks) {
   let newError = {}
   let errors = fields[name].errors
 
