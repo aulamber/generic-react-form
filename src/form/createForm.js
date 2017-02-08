@@ -33,6 +33,7 @@ import {
   getFinalValues,
 } from './stateHandling/index'
 import * as actions from './actions/index';
+import getFieldErrorsToDisplay from '../form/utils/fieldErrorsToDisplay'
 
 
 export default function createForm({ ...params }, ComposedComponent) {
@@ -60,10 +61,12 @@ export default function createForm({ ...params }, ComposedComponent) {
       const { actions } = this.props
       const { displayErrorsFromStart, initialFields, fieldChecks, formChecks } = params
       const fields = initializeFields(initialFields, fieldChecks)
+      const fieldErrorsToDisplay = getFieldErrorsToDisplay(fields, displayErrorsFromStart)
       const formErrors = updateFormErrors({}, formChecks, fields)
       const disabled = updateDisableStatus(true, displayErrorsFromStart, fields, formErrors)
 
       actions.setFields(fields)
+      actions.setFieldErrorsToDisplay(fieldErrorsToDisplay)
       actions.setFormErrors(formErrors)
       actions.setDisableStatus(disabled)
     }
@@ -80,10 +83,12 @@ export default function createForm({ ...params }, ComposedComponent) {
         fields = updateFieldErrors(name, value, fields, fieldChecks[name])
         fields = updateFieldErrors(name, value, fields, fieldChecks.comparChecks, true)
         formErrors = updateFormErrors(formErrors, formChecks, fields)
+        const fieldErrorsToDisplay = getFieldErrorsToDisplay(fields, displayErrorsFromStart)
         const disabled = updateDisableStatus(false, displayErrorsFromStart, fields, formErrors)
 
         if (pristine) { actions.setFormPristine() }
         actions.setFields(fields)
+        actions.setFieldErrorsToDisplay(fieldErrorsToDisplay)
         actions.setFormErrors(formErrors)
         actions.setDisableStatus(disabled)
       }
@@ -104,7 +109,10 @@ export default function createForm({ ...params }, ComposedComponent) {
           if (!fieldErrors && !Object.keys(formErrors).length) {
             onSubmit(finalValues)
           } else {
+            const fieldErrorsToDisplay = getFieldErrorsToDisplay(fields, displayErrorsFromStart)
+
             actions.setFields(updatedFields)
+            actions.setFieldErrorsToDisplay(fieldErrorsToDisplay)
             actions.setFormPristine()
             actions.setDisableStatus(updateDisableStatus(
               false,

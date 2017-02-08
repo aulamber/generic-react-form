@@ -1,17 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import getFieldErrorsToDisplay from '../form/utils/fieldErrorsToDisplay'
 import styles from './style'
 
 
-function FieldErrors({ name, fields }, { displayErrorsFromStart }) {
-  const errorsToDisplay = getFieldErrorsToDisplay(name, fields, displayErrorsFromStart)
+function FieldErrors({ name, fieldErrorsToDisplay }) {
+  const fieldErrors = fieldErrorsToDisplay[name]
 
-  if (!errorsToDisplay) return <div />
-
-  const errorMap = errorsToDisplay.map((error, i) => {
-    return <p key={i}>{error.message}</p>
+  if (!fieldErrors) return <div />
+  
+  const errorMap = Object.keys(fieldErrors).map((error, i) => {
+    return <p key={i}>{fieldErrors[error].message}</p>
   })
 
   return <div style={styles.fieldErrors}>{ errorMap }</div>
@@ -19,15 +18,10 @@ function FieldErrors({ name, fields }, { displayErrorsFromStart }) {
 
 FieldErrors.propTypes = {
   name: PropTypes.string.isRequired,
-  fields: PropTypes.shape(),
-}
-
-FieldErrors.contextTypes = {
-  displayErrorsFromStart: PropTypes.bool
 }
 
 function mapStateToProps({ formReducer }) {
-  return { fields: formReducer.fields };
+  return { fieldErrorsToDisplay: formReducer.fieldErrorsToDisplay };
 }
 
 export default connect(mapStateToProps)(FieldErrors);

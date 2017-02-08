@@ -21,10 +21,8 @@ class FormContent extends Component {
   }
 
   render() {
-    const { disabled } = this.props
-
     return (
-      <div style={styles.form(disabled)}>
+      <div style={styles.form(this.props.disabled)}>
         <FormErrors />
 
         <p style={styles.label} >AMOUNT 1:</p>

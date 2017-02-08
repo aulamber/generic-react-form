@@ -1,23 +1,25 @@
-export default function getFieldErrorsToDisplay(name, fields, displayErrorsFromStart) {
-  const { errors } = fields[name]
+export default function getFieldErrorsToDisplay(fields, displayErrorsFromStart) {
+  let allFieldsErrors = {}
+  let filteredFields = Object.keys(fields)
 
-  if (!errors || !Object.keys(errors).length) return []
+  if (!displayErrorsFromStart) {
+    filteredFields = filteredFields.filter(field => {
+      const { errors, pristine } = fields[field]
 
-  return Object.keys(errors)
-    .filter(error => {
-      const { displayStatus } = errors[error]
-
-      // case #1: display any error from start
-      if (displayErrorsFromStart) { return true }
+      // case #1: do not add field in filteredFields if no field errors
+      if (!Object.keys(errors).length) { return false }
 
       // case #2: display compar error as soon as a compared field becomes dirty
-      if (displayStatus !== undefined) { return displayStatus }
+      if (errors.displayStatus !== undefined) { return errors.displayStatus }
 
       // case #3: display simple error as soon as a field becomes dirty
-      return !fields[name].pristine
+      return !pristine
     })
+  }
 
-    .map((error) => {
-      return { ...errors[error], name: error }
-    })
+  filteredFields.forEach(field => {
+    allFieldsErrors = { ...allFieldsErrors, [field]: fields[field].errors }
+  })
+
+  return allFieldsErrors
 }

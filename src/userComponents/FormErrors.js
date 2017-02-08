@@ -5,9 +5,9 @@ import hasFormErrorsToDisplay from '../form/utils/hasFormErrorsToDisplay'
 import styles from './style'
 
 function FormErrors({ pristine, formErrors }, { displayErrorsFromStart }) {
-  const hasErrorToDisplay = hasFormErrorsToDisplay(formErrors, displayErrorsFromStart, pristine)
+  const hasFormErrorToDisplay = hasFormErrorsToDisplay(formErrors, displayErrorsFromStart, pristine)
 
-  if (!hasErrorToDisplay) return <div />
+  if (!hasFormErrorToDisplay) return <div />
 
   const errorMap = Object.keys(formErrors).map((error, i) => {
     return <p key={i}>{formErrors[error]}</p>

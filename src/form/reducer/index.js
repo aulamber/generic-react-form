@@ -15,6 +15,10 @@ export default function formReducer(
       return { ...state, fields: action.fields };
     }
 
+    case types.SET_FIELDS_ERRORS_TO_DISPLAY: {
+      return { ...state, fieldErrorsToDisplay: action.fieldErrorsToDisplay };
+    }
+
     case types.SET_FORM_ERRORS: {
       return { ...state, formErrors: action.formErrors };
     }

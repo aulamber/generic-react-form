@@ -1,6 +1,9 @@
 export default {
-  pristine: true,
-  fields: {},
-  formErrors: {},
   disabled: true,
+  fields: {},
+  fieldErrorsToDisplay: [],
+  formErrors: {},
+  hasFormErrorsToDisplay: false,
+  pristine: true,
+
 }

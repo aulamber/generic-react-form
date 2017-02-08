@@ -8,6 +8,10 @@ export function setFields(fields) {
   return { type: types.SET_FIELDS, fields };
 }
 
+export function setFieldErrorsToDisplay(fieldErrorsToDisplay) {
+  return { type: types.SET_FIELDS_ERRORS_TO_DISPLAY, fieldErrorsToDisplay };
+}
+
 export function setFormErrors(formErrors) {
   return { type: types.SET_FORM_ERRORS, formErrors };
 }
