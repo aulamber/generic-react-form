@@ -2,13 +2,18 @@
 A FAIRE
 
 1) Donner un nom à chaque formulaire et enregistrer la data au bon endroit dans redux
-2) faire un composant de checkbox + radio + number + range (+ email ?)
+2) Enregistrer un état pristine de la data
+3) Proposer de mettre la data à zéro
+4) faire un composant de checkbox + radio + number + range (+ email ?)
 (moins important): email, url, date, color, time
-3) enlever tout le non paramétrable (style, balises) non accessible au user dans Form et Input
-4) optimisation des perfs (limiter au max les boucles dans les boucles avec les forEach)
-5) tests
-6) doc + readme
-7) passage en module npm
+5) Enlever redux dans /form ??
+6) Remettre dans l'ordre alpha tous les noms de variables + proptypes
+7) Mettre tous les composants réutilisables (Input etc.) dans un fichier index.js
+à la racine qui sera appelé sans /index dans le path
+8) optimisation des perfs (limiter au max les boucles dans les boucles avec les forEach)
+9) tests
+10) doc + readme
+11) passage en module npm
 
 */
 
@@ -28,6 +33,7 @@ import {
   getFinalValues,
 } from './stateHandling/index'
 import * as actions from './actions/index';
+
 
 export default function createForm({ ...params }, ComposedComponent) {
   class Form extends Component {

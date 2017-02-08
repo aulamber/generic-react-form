@@ -1,41 +1,28 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import hasFormErrorsToDisplay from '../form/utils/hasFormErrorsToDisplay'
+import styles from './style'
+
 function FormErrors({ pristine, formErrors }, { displayErrorsFromStart }) {
-  let errors = {}
-  const styles = {
-    container: {
-      margin: 'auto',
-      width: '320px',
-      color: 'white',
-      backgroundColor: '#ffaa80',
-      borderRadius: '10px',
-      padding: '1px',
-      marginBottom: '35px',
-    },
-    title: {
-      fontWeight: 'bold',
-    },
-  }
+  const hasErrorToDisplay = hasFormErrorsToDisplay(formErrors, displayErrorsFromStart, pristine)
 
-  if (formErrors) { errors = Object.keys(formErrors) }
+  if (!hasErrorToDisplay) return <div />
 
-  const hasNoError = (displayErrorsFromStart
-    ? !formErrors || !errors.length
-    : pristine || !formErrors || !errors.length
-  )
-  if (hasNoError) return <div />
-
-  const errorMap = errors.map((error, i) => {
+  const errorMap = Object.keys(formErrors).map((error, i) => {
     return <p key={i}>{formErrors[error]}</p>
   })
 
   return (
-    <div style={styles.container}>
-      <p style={styles.title}>Form errors:</p>
+    <div style={styles.formErrors.container}>
+      <p style={styles.formErrors.title}>Form errors:</p>
       { errorMap }
     </div>
   )
+}
+
+FormErrors.defaultProps = {
+  style: {},
 }
 
 FormErrors.propTypes = {

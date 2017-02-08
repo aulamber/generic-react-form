@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux';
 
-import Input from './Input'
+import Input from '../form/Input'
 import FieldErrors from './FieldErrors'
 import FormErrors from './FormErrors'
-import SubmitButton from './SubmitButton'
+import SubmitButton from '../form/SubmitButton'
+import styles from './style'
+
 
 class FormContent extends Component {
   constructor(props) {
@@ -19,39 +21,32 @@ class FormContent extends Component {
   }
 
   render() {
-    const styles = {
-      form: {
-        width: '360px',
-        padding: '20px 0',
-        backgroundColor: (this.props.disabled ? '#f2f2f2' : '#b3ffb3'),
-        borderRadius: '10px',
-      },
-      label: {
-        marginTop: '30px'
-      },
-    }
+    const { disabled } = this.props
 
     return (
-      <div style={styles.form}>
-      <FormErrors />
+      <div style={styles.form(disabled)}>
+        <FormErrors />
 
-      <p style={styles.label} >AMOUNT 1:</p>
-      <Input name="amount1" />
-      <FieldErrors name="amount1" />
+        <p style={styles.label} >AMOUNT 1:</p>
+        <Input name="amount1" placeholder='amount1' style={styles.input} />
+        <FieldErrors name="amount1" />
 
-      <p style={styles.label} >AMOUNT 2:</p>
-      <Input name="amount2" />
-      <FieldErrors name="amount2" />
+        <p style={styles.label} >AMOUNT 2:</p>
+        <Input name="amount2" placeholder='amount2' style={styles.input} />
+        <FieldErrors name="amount2" />
 
-      <p style={styles.label} >AMOUNT 3:</p>
-      <Input name="amount3" />
-      <FieldErrors name="amount3" />
+        <p style={styles.label} >AMOUNT 3:</p>
+        <Input name="amount3" placeholder='amount3' style={styles.input} />
+        <FieldErrors name="amount3" />
 
-      <p style={styles.label} >AMOUNT 4:</p>
-      <Input name="amount4" />
-      <FieldErrors name="amount4" />
+        <p style={styles.label} >AMOUNT 4:</p>
+        <Input name="amount4" placeholder='amount4' style={styles.input} />
+        <FieldErrors name="amount4" />
 
-      <SubmitButton onSubmit={this.context.handleSubmit(this.onSubmit)} />
+        <SubmitButton
+          onSubmit={this.context.handleSubmit(this.onSubmit)}
+          style={styles.submitButton}
+        />
       </div>
     )
   }
@@ -62,7 +57,10 @@ FormContent.contextTypes = {
 }
 
 function mapStateToProps({ formReducer }) {
-  return { disabled: formReducer.disabled };
+  return {
+    disabled: formReducer.disabled,
+    formErrors: formReducer.formErrors,
+  };
 }
 
 export default connect(mapStateToProps)(FormContent);
