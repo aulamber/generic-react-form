@@ -1,7 +1,7 @@
 export default {
   disabled: true,
   fields: {},
-  fieldErrorsToDisplay: [],
+  fieldErrorsToDisplay: {},
   formErrors: {},
   hasFormErrorsToDisplay: false,
   pristine: true,

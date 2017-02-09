@@ -18,7 +18,7 @@ function App() {
   const MyFirstForm = createForm(
     {
       formName: "MyFirstForm",
-      displayErrorsFromStart: true,
+      displayErrorsFromStart: false,
       fieldChecks,
       formChecks,
       initialFields: {

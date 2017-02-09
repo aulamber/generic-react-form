@@ -50,15 +50,13 @@ class FormContent extends Component {
   }
 }
 
-FormContent.contextTypes = {
-  handleSubmit: PropTypes.func,
-}
-
 function mapStateToProps({ formReducer }) {
   return {
     disabled: formReducer.disabled,
     formErrors: formReducer.formErrors,
   };
 }
+
+FormContent.contextTypes = { handleSubmit: PropTypes.func };
 
 export default connect(mapStateToProps)(FormContent);

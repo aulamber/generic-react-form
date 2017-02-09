@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import hasFormErrorsToDisplay from '../form/utils/hasFormErrorsToDisplay'
 import styles from './style'
 
-function FormErrors({ pristine, formErrors }, { displayErrorsFromStart }) {
-  const hasFormErrorToDisplay = hasFormErrorsToDisplay(formErrors, displayErrorsFromStart, pristine)
-
-  if (!hasFormErrorToDisplay) return <div />
+function FormErrors({ formErrors, hasFormErrorsToDisplay }) {
+  if (!hasFormErrorsToDisplay) return <div />
 
   const errorMap = Object.keys(formErrors).map((error, i) => {
     return <p key={i}>{formErrors[error]}</p>
@@ -21,23 +18,20 @@ function FormErrors({ pristine, formErrors }, { displayErrorsFromStart }) {
   )
 }
 
-FormErrors.defaultProps = {
-  style: {},
+function mapStateToProps({ formReducer }) {
+  const { formErrors, hasFormErrorsToDisplay } = formReducer;
+
+  return { formErrors, hasFormErrorsToDisplay };
 }
+
+FormErrors.defaultProps = {
+  hasFormErrorsToDisplay: false,
+  style: {},
+};
 
 FormErrors.propTypes = {
-  pristine: PropTypes.bool,
   formErrors: PropTypes.shape(),
-}
-
-FormErrors.contextTypes = {
-  displayErrorsFromStart: PropTypes.bool
-}
-
-function mapStateToProps({ formReducer }) {
-  const { pristine, formErrors } = formReducer
-
-  return { pristine, formErrors };
-}
+  hasFormErrorsToDisplay: PropTypes.bool,
+};
 
 export default connect(mapStateToProps)(FormErrors);
