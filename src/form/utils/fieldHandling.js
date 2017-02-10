@@ -1,4 +1,4 @@
-import { updateFieldErrors } from './errors'
+import { updateFieldErrors } from './errorHandling'
 
 export function initializeFields(fields, checks) {
   let stateFields = {}

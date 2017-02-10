@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 
 import styles from './style'
 
-function FormErrors({ formErrors, hasFormErrorsToDisplay }) {
-  if (!hasFormErrorsToDisplay) return <div />
+function FormErrors({ formErrors, displayFormErrors }) {
+  if (!displayFormErrors) return <div />
 
   const errorMap = Object.keys(formErrors).map((error, i) => {
     return <p key={i}>{formErrors[error]}</p>
@@ -18,20 +17,9 @@ function FormErrors({ formErrors, hasFormErrorsToDisplay }) {
   )
 }
 
-function mapStateToProps({ formReducer }) {
-  const { formErrors, hasFormErrorsToDisplay } = formReducer;
-
-  return { formErrors, hasFormErrorsToDisplay };
-}
-
-FormErrors.defaultProps = {
-  hasFormErrorsToDisplay: false,
-  style: {},
-};
-
 FormErrors.propTypes = {
   formErrors: PropTypes.shape(),
-  hasFormErrorsToDisplay: PropTypes.bool,
+  displayFormErrors: PropTypes.bool,
 };
 
-export default connect(mapStateToProps)(FormErrors);
+export default FormErrors;

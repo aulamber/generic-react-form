@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+
+import style from './style';
 
 
-function SubmitButton({ disabled, onSubmit, style }) {
+function SubmitButton({ disabled, onSubmit }) {
   const styles = (!disabled
-    ? style.nonDisabled
-    : style.disabled
+    ? style.submitButton.nonDisabled
+    : style.submitButton.disabled
   )
 
   return (
@@ -25,8 +26,4 @@ SubmitButton.propTypes = {
   onSubmit: PropTypes.func,
 }
 
-function mapStateToProps({ formReducer }) {
-  return { disabled: formReducer.disabled };
-}
-
-export default connect(mapStateToProps)(SubmitButton);
+export default SubmitButton;
