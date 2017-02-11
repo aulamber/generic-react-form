@@ -1,25 +1,20 @@
 /*
 A FAIRE
 
-1) Refactorer les méthodes de createForm parce que répétitions et trop long
-2) Ajouter linter
-3) Enregistrer un état pristine de la data
-4) Proposer de mettre la data à zéro
-5) Utiliser reselect pour le filtre de fieldErrorsToDisplay
-6) faire un composant de select + checkbox + textarea + radio/radiogroup
+1) Ajouter linter
+2) Enregistrer un état pristine de la data
+3) Proposer de mettre la data à zéro
+4) faire un composant de select + checkbox + textarea + radio/radiogroup
 + number + range (+ email ?) (moins important): email, url, date, color, time
-7) Remettre dans l'ordre alpha tous les noms de variables + proptypes
-8) Mettre tous les composants réutilisables (Input etc.) dans un fichier index.js
-à la racine qui sera appelé sans /index dans le path
-9) optimisation des perfs (limiter au max les boucles dans les boucles avec les forEach)
-10) comparer à redux form
-
-11) tests
-12) doc + readme
-13) passage en module npm
+5) Remettre dans l'ordre alpha tous les noms de variables + proptypes
+6) optimisation des perfs (limiter au max les boucles dans les boucles avec les forEach)
+7) comparer à redux form
+8) tests
+9) doc + readme
+10) passage en module npm
 */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 
 import {
   getFieldErrorsToDisplay,
@@ -35,6 +30,9 @@ import {
   shouldDisplayFormErrors,
 } from './utils/index';
 
+import Input from '../form/Input'
+
+
 export default function createForm({ ...params }, ComposedComponent) {
   class Form extends Component {
     constructor(props) {
@@ -42,10 +40,10 @@ export default function createForm({ ...params }, ComposedComponent) {
 
       this.state = {
         disabled: true,
+        displayFormErrors: false,
         fields: {},
         fieldErrorsToDisplay: {},
         formErrors: {},
-        displayFormErrors: false,
         pristine: true,
       }
 
@@ -53,86 +51,48 @@ export default function createForm({ ...params }, ComposedComponent) {
 
       this.handleSubmit = this.handleSubmit.bind(this);
       this.onFieldChange = this.onFieldChange.bind(this);
-      this.setFormProperty = this.setFormProperty.bind(this);
-    }
-
-    getChildContext() {
-      return {
-        displayErrorsFromStart: this.params.displayErrorsFromStart,
-        fields: this.state.fields,
-        onFieldChange: this.onFieldChange,
-      };
+      this.renderInput = this.renderInput.bind(this);
+      this.setFormProperties = this.setFormProperties.bind(this);
     }
 
     componentWillMount() {
       const { pristine } = this.state;
-      const { displayErrorsFromStart, initialFields, fieldChecks, formChecks } = this.params;
-
+      const { initialFields, fieldChecks, formChecks } = this.params;
       const fields = initializeFields(initialFields, fieldChecks);
-      const fieldErrorsToDisplay = getFieldErrorsToDisplay(
-        fields,
-        displayErrorsFromStart,
-      );
       const formErrors = updateFormErrors({}, formChecks, fields);
-      const displayFormErrors = shouldDisplayFormErrors(
-        formErrors,
-        displayErrorsFromStart,
-        pristine,
-      );
-      const disabled = updateDisableStatus(
-        true,
-        displayErrorsFromStart,
-        fields,
-        formErrors,
-      );
 
-      this.setFormProperty('fields', fields);
-      this.setFormProperty('fieldErrorsToDisplay', fieldErrorsToDisplay);
-      this.setFormProperty('displayFormErrors', displayFormErrors);
-      this.setFormProperty('formErrors', formErrors);
-      this.setFormProperty('disabled', disabled);
+      this.setFormProperties({ fields, formErrors, pristine });
     }
 
-    setFormProperty(key, value) {
-      this.setState({ [key]: value });
+    setFormProperties({ fields, formErrors, pristine }) {
+      const fromStart = this.params.displayErrorsFromStart;
+
+      this.setState({
+        disabled: updateDisableStatus(pristine, fromStart, fields, formErrors),
+        displayFormErrors: shouldDisplayFormErrors(formErrors, fromStart, pristine),
+        fields,
+        fieldErrorsToDisplay: getFieldErrorsToDisplay(fields, fromStart),
+        formErrors,
+        pristine,
+      });
     }
 
     onFieldChange(userFunction = () => {}) {
       return (name) => {
         return (e) => {
-          const { pristine } = this.state;
-          const { displayErrorsFromStart, fieldChecks, formChecks } = this.params;
+          const { fieldChecks, formChecks } = this.params;
           const value = e.target.value;
-          let fields = this.state.fields;
-          let formErrors = this.state.formErrors;
+          const pristine = false;
 
+          let fields = this.state.fields;
           fields = updateFieldValue(name, value, fields);
           fields = updateFieldErrors(name, value, fields, fieldChecks[name]);
           fields = updateFieldErrors(name, value, fields, fieldChecks.comparChecks, true);
+
+          let formErrors = this.state.formErrors;
           formErrors = updateFormErrors(formErrors, formChecks, fields);
 
-          const fieldErrorsToDisplay = getFieldErrorsToDisplay(
-            fields,
-            displayErrorsFromStart,
-          );
-          const displayFormErrors = shouldDisplayFormErrors(
-            formErrors,
-            displayErrorsFromStart,
-            false,
-          );
-          const disabled = updateDisableStatus(
-            false,
-            displayErrorsFromStart,
-            fields,
-            formErrors,
-          );
-
-          if (pristine) { this.setFormProperty('pristine', false); }
-          this.setFormProperty('fields', fields);
-          this.setFormProperty('fieldErrorsToDisplay', fieldErrorsToDisplay);
-          this.setFormProperty('displayFormErrors', displayFormErrors);
-          this.setFormProperty('formErrors', formErrors);
-          this.setFormProperty('disabled', disabled);
+          this.setFormProperties({ fields, formErrors, pristine });
 
           userFunction();
         }
@@ -141,44 +101,37 @@ export default function createForm({ ...params }, ComposedComponent) {
 
     handleSubmit(onSubmit = () => {}) {
       return (e) => {
-        const { fields, formErrors } = this.state;
+        let fields = this.state.fields;
+        const { formErrors } = this.state;
         const { displayErrorsFromStart } = this.params;
         const finalValues = getFinalValues(fields);
+        const pristine = false;
 
         if (displayErrorsFromStart) {
           onSubmit(finalValues);
         } else {
-          const updatedFields = updateFieldsPostSubmit(fields);
-          let fieldErrors = hasFieldErrors(updatedFields);
+          fields = updateFieldsPostSubmit(fields);
+          let fieldErrors = hasFieldErrors(fields);
 
           if (!fieldErrors && !Object.keys(formErrors).length) {
             onSubmit(finalValues);
           } else {
-            const fieldErrorsToDisplay = getFieldErrorsToDisplay(
-              updatedFields,
-              displayErrorsFromStart,
-            );
-            const displayFormErrors = shouldDisplayFormErrors(
-              formErrors,
-              displayErrorsFromStart,
-              false,
-            );
-            const disabled = updateDisableStatus(
-              false,
-              displayErrorsFromStart,
-              updatedFields,
-              formErrors,
-            );
-
-            this.setFormProperty('fields', updatedFields);
-            this.setFormProperty('pristine', false);
-            this.setFormProperty('disabled', disabled);
-            this.setFormProperty('fieldErrorsToDisplay', fieldErrorsToDisplay);
-            this.setFormProperty('displayFormErrors', displayFormErrors);
+            this.setFormProperties({ fields, formErrors, pristine });
           }
         }
         e.preventDefault();
       }
+    }
+
+    renderInput(userProps) {
+      const inputProps = {
+        ...userProps,
+        displayErrorsFromStart: this.params.displayErrorsFromStart,
+        fields: this.state.fields,
+        onFieldChange: this.onFieldChange,
+      };
+
+      return () => <Input { ...inputProps } />
     }
 
     render() {
@@ -186,18 +139,13 @@ export default function createForm({ ...params }, ComposedComponent) {
         ...this.state,
         formName: this.params.formName,
         handleSubmit: this.handleSubmit,
+        renderInput: this.renderInput,
         onFieldChange: this.onFieldChange,
       }
 
       return <ComposedComponent { ...formProps } />
     }
   }
-
-  Form.childContextTypes = {
-    displayErrorsFromStart: PropTypes.bool,
-    fields: PropTypes.shape(),
-    onFieldChange: PropTypes.func,
-  };
 
   return Form;
 }

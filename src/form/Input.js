@@ -2,14 +2,20 @@ import _ from 'lodash'
 import React, { PropTypes } from 'react';
 
 
-function Input(props, context) {
-  const { handleChange, name, style } = props;
-  const { displayErrorsFromStart, fields, onFieldChange } = context;
+function Input(props) {
+  const {
+    displayErrorsFromStart,
+    fields,
+    handleChange,
+    name,
+    onFieldChange,
+    style,
+  } = props;
 
   if (!name || fields[name] === undefined) { return <div /> };
 
   let inputProps = {
-    ...(_.omit(props, ['handleChange'])),
+    ...(_.omit(props, ['displayErrorsFromStart', 'fields', 'handleChange', 'onFieldChange'])),
     value: fields[name].value,
     onChange: onFieldChange(handleChange)(name),
   };
@@ -34,12 +40,6 @@ Input.propTypes = {
                                  when event triggered; */
   name: PropTypes.string.isRequired,
   style: PropTypes.shape().isRequired,
-};
-
-Input.contextTypes = {
-  displayErrorsFromStart: PropTypes.bool,
-  fields: PropTypes.shape(),
-  onFieldChange: PropTypes.func.isRequired,
 };
 
 export default Input;

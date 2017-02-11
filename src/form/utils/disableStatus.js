@@ -1,5 +1,5 @@
-function updateWhenDirty(formPristine, displayErrorsFromStart, fields, anyFormError) {
-  let disabled = !displayErrorsFromStart && !formPristine && anyFormError
+function updateWhenDirty(formPristine, fields, anyFormError) {
+  let disabled = !formPristine && anyFormError
 
   if (!disabled) {
     Object.keys(fields).forEach(field => {
@@ -47,11 +47,10 @@ export default function updateDisableStatus(
   fields,
   formErrors
 ) {
-
   const anyFormError = !!Object.keys(formErrors).length
 
   if (displayErrorsFromStart) {
     return updateFromStart(fields, anyFormError)
   }
-  return updateWhenDirty(pristine, displayErrorsFromStart, fields, anyFormError)
+  return updateWhenDirty(pristine, fields, anyFormError)
 }
