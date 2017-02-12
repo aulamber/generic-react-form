@@ -49,32 +49,62 @@ export default function createForm({ ...params }, ComposedComponent) {
 
       this.params = setParamsDefaultValues(params);
 
+      this.getInitialData = this.getInitialData.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.onFieldChange = this.onFieldChange.bind(this);
       this.renderInput = this.renderInput.bind(this);
+      this.resetInitialData = this.resetInitialData.bind(this);
+      this.resetDataEmpty = this.resetDataEmpty.bind(this);
       this.setFormProperties = this.setFormProperties.bind(this);
     }
 
     componentWillMount() {
       const { pristine } = this.state;
       const { initialFields, fieldChecks, formChecks } = this.params;
+
       const fields = initializeFields(initialFields, fieldChecks);
       const formErrors = updateFormErrors({}, formChecks, fields);
+      const initialData = this.setFormProperties({ fields, formErrors, pristine });
 
-      this.setFormProperties({ fields, formErrors, pristine });
+      this.setState({ initialData });
+    }
+
+    getInitialData() {
+      return this.state.initialData;
+    }
+
+    resetInitialData() {
+      this.setState(this.state.initialData);
+    }
+
+    resetDataEmpty() {
+      const { fields } = this.state.initialData;
+      let resetFields = {};
+
+      Object.keys(fields).forEach(field => {
+        resetFields = {
+          ...resetFields,
+          [field]: { ...fields[field], value: '' },
+        }
+      });
+
+      this.setState({ ...this.state.initialData, fields: resetFields })
     }
 
     setFormProperties({ fields, formErrors, pristine }) {
       const fromStart = this.params.displayErrorsFromStart;
-
-      this.setState({
+      const state = {
         disabled: updateDisableStatus(pristine, fromStart, fields, formErrors),
         displayFormErrors: shouldDisplayFormErrors(formErrors, fromStart, pristine),
         fields,
         fieldErrorsToDisplay: getFieldErrorsToDisplay(fields, fromStart),
         formErrors,
         pristine,
-      });
+      };
+
+      this.setState(state);
+
+      return state;
     }
 
     onFieldChange(userFunction = () => {}) {
@@ -109,12 +139,14 @@ export default function createForm({ ...params }, ComposedComponent) {
 
         if (displayErrorsFromStart) {
           onSubmit(finalValues);
+          this.resetDataEmpty();
         } else {
           fields = updateFieldsPostSubmit(fields);
           let fieldErrors = hasFieldErrors(fields);
 
           if (!fieldErrors && !Object.keys(formErrors).length) {
             onSubmit(finalValues);
+            this.resetDataEmpty();
           } else {
             this.setFormProperties({ fields, formErrors, pristine });
           }
@@ -131,10 +163,11 @@ export default function createForm({ ...params }, ComposedComponent) {
         onFieldChange: this.onFieldChange,
       };
 
-      return () => <Input { ...inputProps } />
+      return <Input { ...inputProps } />
     }
 
     render() {
+      console.log('this.state = ', this.state);
       const formProps = {
         ...this.state,
         formName: this.params.formName,
