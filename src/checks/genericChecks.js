@@ -22,7 +22,7 @@ export function isTooLong(length) {
       message: `Too long: should be ${length} characters max.`,
     }
 
-    return value.length <= length ? error : { ...error, bool: true }
+    return value && value.length <= length ? error : { ...error, bool: true }
   }
 }
 

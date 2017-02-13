@@ -40,6 +40,7 @@ export default function createForm({ ...params }, ComposedComponent) {
 
       this.state = {
         disabled: true,
+        displayErrorsFromStart: params.displayErrorsFromStart,
         displayFormErrors: false,
         fields: {},
         fieldErrorsToDisplay: {},
@@ -80,21 +81,33 @@ export default function createForm({ ...params }, ComposedComponent) {
     resetDataEmpty() {
       const { fields } = this.state.initialData;
       let resetFields = {};
+      let fieldErrorsToDisplay = {};
+
+      Object.keys(this.state.fieldErrorsToDisplay)
+        .forEach(field => {
+          fieldErrorsToDisplay = { ...fieldErrorsToDisplay, [field]: {} };
+        })
 
       Object.keys(fields).forEach(field => {
         resetFields = {
           ...resetFields,
-          [field]: { ...fields[field], value: '' },
+          [field]: { ...fields[field], value: '', pristine: true },
         }
       });
 
-      this.setState({ ...this.state.initialData, fields: resetFields })
+      this.setState({
+        ...this.state.initialData,
+        fieldErrorsToDisplay,
+        fields: resetFields,
+        displayErrorsFromStart: false,
+      })
     }
 
     setFormProperties({ fields, formErrors, pristine }) {
-      const fromStart = this.params.displayErrorsFromStart;
+      const fromStart = this.state.displayErrorsFromStart;
       const state = {
         disabled: updateDisableStatus(pristine, fromStart, fields, formErrors),
+        displayErrorsFromStart: fromStart,
         displayFormErrors: shouldDisplayFormErrors(formErrors, fromStart, pristine),
         fields,
         fieldErrorsToDisplay: getFieldErrorsToDisplay(fields, fromStart),
@@ -132,8 +145,7 @@ export default function createForm({ ...params }, ComposedComponent) {
     handleSubmit(onSubmit = () => {}) {
       return (e) => {
         let fields = this.state.fields;
-        const { formErrors } = this.state;
-        const { displayErrorsFromStart } = this.params;
+        const { displayErrorsFromStart, formErrors } = this.state;
         const finalValues = getFinalValues(fields);
         const pristine = false;
 
@@ -158,7 +170,7 @@ export default function createForm({ ...params }, ComposedComponent) {
     renderInput(userProps) {
       const inputProps = {
         ...userProps,
-        displayErrorsFromStart: this.params.displayErrorsFromStart,
+        displayErrorsFromStart: this.state.displayErrorsFromStart,
         fields: this.state.fields,
         onFieldChange: this.onFieldChange,
       };
