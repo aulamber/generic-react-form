@@ -3,11 +3,11 @@ export function capitalize(str) {
 }
 
 export function changeLastCharToDot(str) {
-  return `${str.substring(0, str.length - 1)}.`
+  return `${str.substring(0, str.length - 1)}.`;
 }
 
 export function changeLastCommaToAnd(str) {
-  const i = str.lastIndexOf(",");
+  const i = str.lastIndexOf(',');
 
-  return `${str.substring(0, i)} and${str.substring(i + 1, str.length)}`
+  return `${str.substring(0, i)} and${str.substring(i + 1, str.length)}`;
 }

@@ -1,22 +1,25 @@
 {
-  "name": "hello-world",
+  "name": "testing-env",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "react-scripts": "0.8.3"
-  },
   "dependencies": {
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-redux": "^5.0.1",
-    "redux": "^3.6.0",
-    "redux-immutable-state-invariant": "^1.2.4",
-    "redux-logger": "^2.7.4",
-    "redux-thunk": "^2.1.0"
+    "lodash": "^4.17.4",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "prop-types": "^15.5.8",
+    "react-scripts": "0.9.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint src/**",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

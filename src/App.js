@@ -1,56 +1,24 @@
 import React from 'react';
-
-import { fieldChecks, formChecks } from './checks/selection'
-
-import createForm from './form/createForm'
-import FormContent from './userComponents/FormContent'
-
+import logo from './logo.svg';
 import './App.css';
 
-const styles = {
-  height: '100%',
-  display: 'flex',
-  justifyContent: 'center',
-  marginTop: '60px'
-}
+import createForm from './form';
+import firstForm from './firstForm';
 
 function App() {
-  const MyFirstForm = createForm(
-    {
-      formName: "MyFirstForm",
-      displayErrorsFromStart: true,
-      fieldChecks,
-      formChecks,
-      initialFields: {
-        amount1: { value : '2', isRequired: true },
-        amount2: { value : '2', isRequired: true },
-        amount3: { value: '1', isRequired: true },
-        amount4: { value: '4', isRequired: false },
-      }
-    },
-    FormContent,
-  )
-
-  const MySecondForm = createForm(
-    {
-      formName: "MySecondForm",
-      displayErrorsFromStart: true,
-      fieldChecks,
-      formChecks,
-      initialFields: {
-        amount1: { value : '1', isRequired: true },
-        amount2: { value : '2', isRequired: true },
-        amount3: { value: '3', isRequired: true },
-        amount4: { value: '4', isRequired: false },
-      }
-    },
-    FormContent,
-  )
+  const FirstForm = createForm({
+    ComposedComponent: firstForm.ComposedComponent,
+    config: firstForm.config,
+  });
 
   return (
-    <div className="App" style={styles}>
-      <MyFirstForm />
-      <MySecondForm />
+    <div className="App">
+      <div className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h2>Welcome to React</h2>
+      </div>
+
+      <FirstForm />
     </div>
   );
 }

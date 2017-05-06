@@ -1,61 +1,36 @@
-import { updateFieldErrors } from './errorHandling'
+export function initializeFields(fieldConfig) {
+  let initializedFields = {};
 
-export function initializeFields(fields, checks) {
-  let stateFields = {}
-
-  Object.keys(fields).forEach(name => {
-    const { value } = fields[name]
-    fields = updateFieldErrors(name, value, fields, checks[name])
-    fields = updateFieldErrors(name, value, fields, checks.comparChecks, true)
-
-    stateFields = {
-      ...stateFields,
+  // For each field, we set several properties: checks, errors, isRequired, pristine, value
+  Object.keys(fieldConfig).forEach((name) => {
+    initializedFields = {
+      ...initializedFields,
       [name]: {
+        errors: null,
+        isRequired: true,
         pristine: true,
-        isRequired: fields[name].isRequired,
-        value: value || '',
-        errors: fields[name].errors || {},
+        value: null,
+        ...fieldConfig[name],
       },
-    }
-  })
+    };
+  });
 
-  return stateFields
-}
-
-export function updateFieldValue(name, value, fields) {
-  if (!fields[name]) { return fields }
-
-  return {
-    ...fields,
-    [name]: { ...fields[name], pristine: false, value },
-  }
+  return initializedFields;
 }
 
 export function getFinalValues(fields) {
-  let values = {}
+  let values = {};
 
-  Object.keys(fields).forEach(field => {
-    values = { ...values, [field]: fields[field].value }
-  })
+  Object.keys(fields).forEach((field) => {
+    values = { ...values, [field]: fields[field].value };
+  });
 
-  return values
+  return values;
 }
 
-export function updateFieldsPostSubmit(fields) {
-  Object.keys(fields).forEach(field => {
-    let errors = fields[field].errors
-
-    Object.keys(errors).forEach(error => {
-      if (errors[error].displayStatus !== undefined) {
-        errors = { ...errors, [error]: { ...errors[error], displayStatus: true } }
-      }
-    })
-
-    fields = {
-      ...fields,
-      [field]: { ...fields[field], pristine: false, errors },
-    }
-  })
-
-  return fields
+export function setFieldValue(name, value, fields) {
+  return {
+    ...fields,
+    [name]: { ...fields[name], pristine: false, value },
+  };
 }
