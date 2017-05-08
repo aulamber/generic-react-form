@@ -1,6 +1,10 @@
-export default function isDisabled(fields) {
+import { isObjectEmpty } from './';
+
+export default function isDisabled(fields, formErrors, isPostSubmit) {
+  if (isPostSubmit && !isObjectEmpty(formErrors)) return true;
+
   return !!(Object.keys(fields).filter(field => (
     (fields[field].isRequired && !fields[field].value)
-    || fields[field].errors
+    || !isObjectEmpty(fields[field].errors)
   ))).length;
 }

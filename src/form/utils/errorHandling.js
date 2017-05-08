@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+
 // ================================ FIELD ERRORS ===============================
 
 export function hasFieldErrors(fields) {
@@ -14,16 +15,17 @@ export function hasFieldErrors(fields) {
   return fieldErrors;
 }
 
-
-function setFieldError(newError, errors = {}, displayStatus) {
+function setFieldError(newError, prevErrors, displayStatus) {
   const { type, bool, message } = newError;
-  const errorAlreadyInArray = !!errors[type];
+  const errorAlreadyInArray = !!prevErrors[type];
+  let errors = prevErrors;
 
   if (bool) {
     const error = (displayStatus === undefined
       ? { message }
       : { message, displayStatus }
     );
+
     errors = { ...errors, [type]: error };
   }
   if (!bool && errorAlreadyInArray) {
@@ -33,44 +35,30 @@ function setFieldError(newError, errors = {}, displayStatus) {
   return errors;
 }
 
-export function setFieldErrors(name, value, fields) {
-  let errors;
-  let error;
+export function setFieldErrors(field, fieldChecks) {
+  let errors = field.errors;
 
-  // let errors = fields[name].errors
-
-  fields[name].checks.forEach((check) => {
-    error = check(value);
-
-    if (error.bool) {
-      errors = { ...errors, error };
-    }
-
-
-    // errors = fields[name].errors
-    // errors = setFieldError(newError, errors)
-    // field = setFieldError(newError, errors)
-    // fields = { ...fields, [name]: { ...fields[name], errors } }
+  fieldChecks.forEach((check) => {
+    errors = setFieldError(check(field.value), errors);
   });
 
-  return { ...fields, [name]: { ...fields[name], errors } };
+  return errors;
 }
 
 
 // ================================ FORM ERRORS ================================
 
-export function setFormErrors(/* errors, */checks, fields) {
-  let errors = {};
+export function setFormErrors(fields, formChecks, formErrors = {}) {
+  let errors = formErrors;
 
-  checks.forEach((check) => {
+  formChecks.forEach((check) => {
     const { type, bool, message } = check(fields);
 
     if (bool) {
       errors = { ...errors, [type]: message };
+    } else if (!bool && errors[type]) {
+      errors = _.omit(errors, type);
     }
-    /* else if (!bool && errors[type]) {
-      errors = _.omit(errors, type)
-    }*/
   });
 
   return errors;

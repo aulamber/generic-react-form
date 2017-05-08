@@ -24,7 +24,7 @@ Config is an object, made of the props:
 Each field is made of the props:
 - checks (array, optional): validation functions to apply to a specific field
 - isRequired (bool, optional): is this field required to submit the form ; by default is set to true
-- value (any type, optional): value of the field
+- value (any type, mandatory): value of the field (or '', {}, [] etc.)
 
 #### -> comparFieldsChecks (array of objects, optional): if you need to compare a field to other fields
 
@@ -79,12 +79,12 @@ The props injected in your presentational component by the HOC are:
 
 ```javascript
 fields = {
-  amount1: { checks (obj), errors (TODO type), isRequired (bool), pristine (bool), value (any type) },
+  amount1: { errors (object), isRequired (bool), pristine (bool), value (any type) },
   amount2 : { ... },
 }
 ```
 
-#### -> formErrors (object of error strings): value is null until clicking on submit button
+#### -> formErrors (object of error strings): value is an empty object until clicking on submit button
 
 #### -> handleChange (function): HOC method to be called when changing a field. First param is the name of the field, second is an optional onChange, i.e.:
 

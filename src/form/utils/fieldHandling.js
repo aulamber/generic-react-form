@@ -1,16 +1,19 @@
+import { setFieldErrors/* , setFormErrors*/ } from './';
+
 export function initializeFields(fieldConfig) {
   let initializedFields = {};
 
   // For each field, we set several properties: checks, errors, isRequired, pristine, value
   Object.keys(fieldConfig).forEach((name) => {
+    const { isRequired, value } = fieldConfig[name];
+
     initializedFields = {
       ...initializedFields,
       [name]: {
-        errors: null,
-        isRequired: true,
+        errors: {},
+        isRequired: isRequired || true,
         pristine: true,
-        value: null,
-        ...fieldConfig[name],
+        value,
       },
     };
   });
@@ -28,9 +31,10 @@ export function getFinalValues(fields) {
   return values;
 }
 
-export function setFieldValue(name, value, fields) {
-  return {
-    ...fields,
-    [name]: { ...fields[name], pristine: false, value },
-  };
+export function setFieldData(value, prevField, fieldChecks) {
+  let field = { ...prevField, pristine: false, value };
+
+  field = { ...field, errors: setFieldErrors(field, fieldChecks) };
+
+  return field;
 }

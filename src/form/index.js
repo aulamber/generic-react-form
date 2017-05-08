@@ -4,18 +4,15 @@ import {
   getFinalValues,
   initializeFields,
   isDisabled,
-  setFieldErrors,
-  setFieldValue,
+  setFieldData,
   setFormErrors,
   setParamDefaultValues,
 } from './utils';
 
 const initialState = {
   disabled: false,
-  displayFormErrors: false,
-  fields: {},
-  // fieldErrorsToDisplay: {},
   formErrors: {},
+  isPostSubmit: false,
   pristine: true,
 };
 
@@ -36,22 +33,25 @@ export default function createForm({ config, ComposedComponent }) {
       const { fieldConfig, formChecks } = this.config;
 
       const fields = initializeFields(fieldConfig);
-      const formErrors = setFormErrors(formChecks, fields);
+      const formErrors = setFormErrors(fields, formChecks);
 
       this.setState({ fields, formErrors });
     }
 
     handleChange(name, onChange = () => {}) {
       return (e) => {
-        const { /* comparFieldsChecks,*/ formChecks } = this.config;
-        const value = e.target.value;
+        const { value } = e.target;
+        const { /* comparFieldsChecks,*/ fieldConfig, formChecks } = this.config;
+        let { fields, formErrors } = this.state;
 
-        const fields = setFieldValue(name, value, this.state.fields);
-        // fields = setFieldErrors(name, value, fields/* , fieldChecks[name]*/);
+        fields = {
+          ...fields,
+          [name]: setFieldData(value, fields[name], fieldConfig[name].checks),
+        };
         // fields = setComparFieldsErrors(name, value, fields, comparFieldsChecks, true/* , fieldChecks.comparChecks*/);
+        formErrors = setFormErrors(fields, formChecks, formErrors);
 
-        const formErrors = setFormErrors(formChecks, fields);
-        const disabled = isDisabled(fields);
+        const disabled = isDisabled(fields, formErrors, this.state.isPostSubmit);
 
         this.setState({ disabled, fields, formErrors, pristine: false });
 
@@ -67,7 +67,7 @@ export default function createForm({ config, ComposedComponent }) {
           onSubmit(getFinalValues(fields));
           this.resetInitialState();
         } else {
-          this.setState({ displayFormErrors: true });
+          this.setState({ disabled: true, isPostSubmit: true });
         }
 
         e.preventDefault();
@@ -75,15 +75,15 @@ export default function createForm({ config, ComposedComponent }) {
     }
 
     resetInitialState() {
-      this.setState({ initialState });
+      this.setState({ ...initialState });
     }
 
     render() {
-      const { disabled, displayFormErrors, fields, formErrors, pristine } = this.state;
+      const { disabled, fields, formErrors, isPostSubmit, pristine } = this.state;
       const formProps = {
         disabled,
         fields,
-        formErrors: (displayFormErrors ? formErrors : null),
+        formErrors: (isPostSubmit ? formErrors : {}),
         handleChange: this.handleChange,
         handleSubmit: this.handleSubmit,
         pristine,

@@ -4,9 +4,9 @@ export default {
   formName: 'FirstForm',
 
   fieldConfig: {
-    amount1: { checks: [isTooLong(6), isNumber], value: '2' },
+    amount1: { checks: [isTooLong(6), isNumber], value: '1' },
     amount2: { checks: [isTooLong(6), isNumber], value: '2' },
-    amount3: { checks: [isTooLong(6), isNumber], value: '1' },
+    amount3: { checks: [isTooLong(6), isNumber], value: '2' },
     amount4: { checks: [isTooLong(6), isNumber], isRequired: false, value: '4' },
   },
 
