@@ -5,7 +5,8 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "shallowequal": "^0.2.2"
   },
   "devDependencies": {
     "eslint": "^3.19.0",

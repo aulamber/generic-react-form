@@ -16,18 +16,20 @@ const abledButton = {
 
 const regularField = {
   border: '1px solid #bfbfbf',
-  borderRadius: '3px',
+  borderRadius: '5px',
   color: '#666666',
   fontSize: '16px',
   height: '30px',
   paddingLeft: '15px',
   paddingRight: '15px',
+  outline: 'none',
   width: '160px',
 };
 
 const errorField = {
   ...regularField,
   border: '1px solid red',
+  color: 'red',
 };
 
 const field = {
@@ -38,8 +40,8 @@ const field = {
 const fieldErrors = {
   color: 'red',
   margin: 'auto',
-  textAlign: 'left',
-  width: '165px',
+  textAlign: 'center',
+  width: '200px',
 };
 
 function form(disabled) {
@@ -70,6 +72,23 @@ const label = {
   marginTop: '30px',
 };
 
+const regularSelect = {
+  ...regularField,
+  height: 33,
+  width: 192,
+};
+
+const errorSelect = {
+  ...regularSelect,
+  border: '1px solid red',
+  color: 'red',
+};
+
+const select = {
+  regular: regularSelect,
+  error: errorSelect,
+};
+
 function submit(disabled) {
   if (disabled) return disabledButton;
 
@@ -89,6 +108,7 @@ export default {
   form,
   formErrors,
   label,
+  select,
   submit,
   top,
 };

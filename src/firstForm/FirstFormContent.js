@@ -1,80 +1,91 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { isObjectEmpty } from '../form/utils';
 import styles from './style';
+import { Select } from './fieldTypes';
+import proptypes from './proptypes';
 
 function FirstFormContent({ formProps }) {
-  const { disabled, fields, formErrors, handleChange, handleSubmit } = formProps;
-  const { amount1, amount2, amount3, amount4 } = fields;
+  const { disabled, fields, formErrors, handleBlur, handleChange, handleField, handleSubmit } = formProps; // eslint-disable-line
+  const { amount1, amount2, amount3, amount4, select } = fields;
 
-  const isFieldError = {
-    amount1: !isObjectEmpty(amount1.errors),
-    amount2: !isObjectEmpty(amount2.errors),
-    amount3: !isObjectEmpty(amount3.errors),
-    amount4: !isObjectEmpty(amount4.errors),
+  const isFieldError = fieldErrors => !isObjectEmpty(fieldErrors);
+  const isComparError = comparErrors => comparErrors && comparErrors.length;
+
+  const hasError = {
+    amount1: { field: isFieldError(amount1.errors), compar: isComparError(formErrors.amount1) },
+    amount2: { field: isFieldError(amount2.errors), compar: isComparError(formErrors.amount2) },
+    amount3: { field: isFieldError(amount3.errors), compar: isComparError(formErrors.amount3) },
+    amount4: { field: isFieldError(amount4.errors), compar: isComparError(formErrors.amount4) },
+    form: { compar: isComparError(formErrors.form) },
+    select: { field: isFieldError(select.errors), compar: isComparError(formErrors.select) },
   };
 
-  const fieldErrorsToDisplay = errors => (
-    <div style={styles.fieldErrors}>
-      {Object.keys(errors).map(error => <p key={error}>{errors[error].message}</p>)}
+  const fieldErrorsToDisplay = fieldName => (hasError[fieldName].field
+    ? <div style={styles.fieldErrors}>
+      {Object.keys(fields[fieldName].errors)
+        .map(error => <p key={error}>{fields[fieldName].errors[error].message}</p>)
+      }
     </div>
-  );
+    : null
+    );
 
-  const formErrorsToDisplay = (formErrors
-    ? (
-      <div style={styles.formErrors.container}>
-        <p style={styles.formErrors.title}>FORM ERRORS</p>
-        {Object.keys(formErrors).map(error => <p key={error}>{formErrors[error]}</p>)}
-      </div>
-    )
+  const formErrorsToDisplay = fieldName => (hasError[fieldName].compar
+    ? <div style={styles.fieldErrors}>
+      {formErrors[fieldName].map(error => <p key={error}>{error}</p>)}
+    </div>
     : null
   );
+
+  const regularInput = (fieldName, text) => {
+    const field = fields[fieldName];
+    const style = (hasError[fieldName].field || hasError[fieldName].compar
+      ? styles.field.error
+      : styles.field.regular
+    );
+
+    return (
+      <div>
+        <p style={styles.label}>{text}</p>
+        <input
+          onBlur={handleBlur(fieldName)}
+          onChange={handleChange(fieldName)}
+          style={style}
+          value={field.value}
+        />
+        {fieldErrorsToDisplay(fieldName)}
+        {formErrorsToDisplay(fieldName)}
+      </div>
+    );
+  };
 
   return (
     <div style={styles.top}>
       <div style={styles.form(disabled)}>
-        {!isObjectEmpty(formErrors) ? formErrorsToDisplay : null}
+        {formErrors.form && formErrors.form.length
+          ? <div style={styles.formErrors.container}>
+            <p style={styles.formErrors.title}>FORM ERRORS</p>
+            {formErrorsToDisplay('form')}
+          </div>
+          : null
+        }
 
         <div>
-          <p style={styles.label}>Amount 1</p>
-          <input
-            onChange={handleChange('amount1')}
-            style={isFieldError.amount1 ? styles.field.error : styles.field.regular}
-            value={amount1.value}
+          <p style={styles.label}>Select field</p>
+          <Select
+            hasError={hasError.select.field || hasError.select.compar}
+            handleField={handleField('select')}
+            options={['Bordeaux', 'Grenoble', 'La Rochelle', 'Paris', 'Tours']}
+            value={fields.select.value}
           />
-          {isFieldError.amount1 ? fieldErrorsToDisplay(amount1.errors) : null}
+          {fieldErrorsToDisplay('select')}
+          {formErrorsToDisplay('select')}
         </div>
 
-        <div>
-          <p style={styles.label}>Amount 2</p>
-          <input
-            onChange={handleChange('amount2')}
-            style={isFieldError.amount2 ? styles.field.error : styles.field.regular}
-            value={amount2.value}
-          />
-          {isFieldError.amount2 ? fieldErrorsToDisplay(amount2.errors) : null }
-        </div>
-
-        <div>
-          <p style={styles.label}>Amount 3</p>
-          <input
-            onChange={handleChange('amount3')}
-            style={isFieldError.amount3 ? styles.field.error : styles.field.regular}
-            value={amount3.value}
-          />
-          {isFieldError.amount3 ? fieldErrorsToDisplay(amount3.errors) : null }
-        </div>
-
-        <div>
-          <p style={styles.label}>Amount 4</p>
-          <input
-            onChange={handleChange('amount4')}
-            style={isFieldError.amount4 ? styles.field.error : styles.field.regular}
-            value={amount4.value}
-          />
-          {isFieldError.amount4 ? fieldErrorsToDisplay(amount4.errors) : null }
-        </div>
+        {regularInput('amount1', 'Amount 1')}
+        {regularInput('amount2', 'Amount 2')}
+        {regularInput('amount3', 'Amount 3')}
+        {regularInput('amount4', 'Amount 4')}
 
         <button
           disabled={disabled}
@@ -86,42 +97,6 @@ function FirstFormContent({ formProps }) {
   );
 }
 
-FirstFormContent.propTypes = {
-  formProps: PropTypes.shape({
-    disabled: PropTypes.bool,
-
-    fields: PropTypes.shape({
-      amount1: PropTypes.shape({
-        errors: PropTypes.shape().isRequired,
-        pristine: PropTypes.bool,
-        value: PropTypes.string.isRequired,
-      }).isRequired,
-
-      amount2: PropTypes.shape({
-        errors: PropTypes.shape().isRequired,
-        pristine: PropTypes.bool,
-        value: PropTypes.string.isRequired,
-      }).isRequired,
-
-      amount3: PropTypes.shape({
-        errors: PropTypes.shape().isRequired,
-        pristine: PropTypes.bool,
-        value: PropTypes.string.isRequired,
-      }).isRequired,
-
-      amount4: PropTypes.shape({
-        errors: PropTypes.shape().isRequired,
-        isRequired: PropTypes.bool,
-        pristine: PropTypes.bool,
-        value: PropTypes.string.isRequired,
-      }).isRequired,
-    }),
-
-    formErrors: PropTypes.shape(),
-    handleChange: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
-    pristine: PropTypes.bool,
-  }).isRequired,
-};
+FirstFormContent.propTypes = proptypes;
 
 export default FirstFormContent;
